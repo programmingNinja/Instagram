@@ -46,7 +46,7 @@ public class HomeActivity extends AppCompatActivity {
         layoutManager.scrollToPosition(0);
         rvInstagramPhotos.setLayoutManager(layoutManager);
 
-        RecyclerView.ItemDecoration itemDecoration = new SimpleVerticalSpacerItemDecoration(28);
+        RecyclerView.ItemDecoration itemDecoration = new SimpleVerticalSpacerItemDecoration(24);
         rvInstagramPhotos.addItemDecoration(itemDecoration);
 
         rvInstagramPhotos.setAdapter(instagramPostsAdapter);

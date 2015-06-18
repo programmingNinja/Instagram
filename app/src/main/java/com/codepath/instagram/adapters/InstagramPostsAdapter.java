@@ -4,9 +4,11 @@ import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.TypefaceSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +44,8 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
         if (instagramPost.caption != null) {
             SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(instagramPost.user.userName);
             ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(MainApplication.sharedApplication().getResources().getColor(R.color.blue_text));
+            TypefaceSpan typefaceSpan = new TypefaceSpan("sans-serif-medium");
+            spannableStringBuilder.setSpan(typefaceSpan, 0, spannableStringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannableStringBuilder.setSpan(foregroundColorSpan, 0, spannableStringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannableStringBuilder.append(" ");
             spannableStringBuilder.append(instagramPost.caption);
