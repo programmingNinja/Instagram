@@ -28,13 +28,13 @@ public class HomeActivity extends AppCompatActivity {
     private List<InstagramPost> posts;
     private InstagramPostsAdapter instagramPostsAdapter;
 
-    RecyclerView rvInstagramPhotos;
+    RecyclerView rvInstagramPosts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        rvInstagramPhotos = (RecyclerView) findViewById(R.id.rvInstagramPosts);
+        rvInstagramPosts = (RecyclerView) findViewById(R.id.rvInstagramPosts);
 
         posts = new ArrayList<>();
         instagramPostsAdapter = new InstagramPostsAdapter(posts);
@@ -44,12 +44,12 @@ public class HomeActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
         layoutManager.scrollToPosition(0);
-        rvInstagramPhotos.setLayoutManager(layoutManager);
+        rvInstagramPosts.setLayoutManager(layoutManager);
 
         RecyclerView.ItemDecoration itemDecoration = new SimpleVerticalSpacerItemDecoration(24);
-        rvInstagramPhotos.addItemDecoration(itemDecoration);
+        rvInstagramPosts.addItemDecoration(itemDecoration);
 
-        rvInstagramPhotos.setAdapter(instagramPostsAdapter);
+        rvInstagramPosts.setAdapter(instagramPostsAdapter);
     }
 
     private void fetchPopularPosts() {

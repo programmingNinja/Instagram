@@ -23,7 +23,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAdapter.PhotoItemViewHolder> {
+public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAdapter.PostItemViewHolder> {
     private static final String TAG = "InstagramPostsAdapter";
     private List<InstagramPost> posts;
 
@@ -32,13 +32,13 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
     }
 
     @Override
-    public PhotoItemViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
+    public PostItemViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
         View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_post, viewGroup, false);
-        return new PhotoItemViewHolder(itemView);
+        return new PostItemViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(PhotoItemViewHolder photoItemViewHolder, int position) {
+    public void onBindViewHolder(PostItemViewHolder postItemViewHolder, int position) {
         InstagramPost instagramPost = posts.get(position);
 
         if (instagramPost.caption != null) {
@@ -49,25 +49,25 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
             spannableStringBuilder.setSpan(foregroundColorSpan, 0, spannableStringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannableStringBuilder.append(" ");
             spannableStringBuilder.append(instagramPost.caption);
-            photoItemViewHolder.tvCaption.setText(spannableStringBuilder);
+            postItemViewHolder.tvCaption.setText(spannableStringBuilder);
         }
 
-        photoItemViewHolder.tvCaption.setVisibility(
+        postItemViewHolder.tvCaption.setVisibility(
                 TextUtils.isEmpty(instagramPost.caption) ? View.GONE : View.VISIBLE);
 
-        photoItemViewHolder.tvUserName.setText(instagramPost.user.userName);
-        photoItemViewHolder.tvRelativeTimestamp.setText(
+        postItemViewHolder.tvUserName.setText(instagramPost.user.userName);
+        postItemViewHolder.tvRelativeTimestamp.setText(
                 DateUtils.getRelativeTimeSpanString(instagramPost.createdTime * 1000,
                         System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS));
 
         int likesCount = instagramPost.likesCount;
-        photoItemViewHolder.tvLikes.setText(Utils.formatNumberForDisplay(likesCount) +
+        postItemViewHolder.tvLikes.setText(Utils.formatNumberForDisplay(likesCount) +
                 " like" + (likesCount != 1 ? "s" : ""));
-        photoItemViewHolder.tvLikes.setVisibility(likesCount == 0 ? View.GONE : View.VISIBLE);
+        postItemViewHolder.tvLikes.setVisibility(likesCount == 0 ? View.GONE : View.VISIBLE);
 
         // Reset image views
-        photoItemViewHolder.sdvPhoto.setImageURI(null);
-        photoItemViewHolder.sdvProfileImage.setImageURI(null);
+        postItemViewHolder.sdvPhoto.setImageURI(null);
+        postItemViewHolder.sdvProfileImage.setImageURI(null);
 
 
         int width = instagramPost.image.imageWidth;
@@ -76,11 +76,11 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
         float aspectRatio = height > 0 ? (float)width / (float)height : 1;
 
         Uri imageUri = Uri.parse(instagramPost.image.imageUrl);
-        photoItemViewHolder.sdvPhoto.setImageURI(imageUri);
-        photoItemViewHolder.sdvPhoto.setAspectRatio(aspectRatio);
+        postItemViewHolder.sdvPhoto.setImageURI(imageUri);
+        postItemViewHolder.sdvPhoto.setAspectRatio(aspectRatio);
 
         Uri profilePictureUri = Uri.parse(instagramPost.user.profilePictureUrl);
-        photoItemViewHolder.sdvProfileImage.setImageURI(profilePictureUri);
+        postItemViewHolder.sdvProfileImage.setImageURI(profilePictureUri);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
         return (posts == null ? 0 : posts.size());
     }
 
-    public static final class PhotoItemViewHolder extends RecyclerView.ViewHolder {
+    public static final class PostItemViewHolder extends RecyclerView.ViewHolder {
         TextView tvUserName;
         TextView tvRelativeTimestamp;
 
@@ -98,7 +98,7 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
         TextView tvCaption;
         TextView tvLikes;
 
-        public PhotoItemViewHolder(View itemView) {
+        public PostItemViewHolder(View itemView) {
             super(itemView);
 
             tvUserName = (TextView) itemView.findViewById(R.id.tvUserName);
