@@ -1,8 +1,5 @@
 package com.codepath.instagram.activities;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,11 +9,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.codepath.instagram.R;
-import com.codepath.instagram.adapters.InstagramPostsAdapter;
+import com.codepath.instagram.adapters.InstagramCommentsAdapter;
 import com.codepath.instagram.fragments.AlertDialogFragment;
-import com.codepath.instagram.helpers.SimpleVerticalSpacerItemDecoration;
+import com.codepath.instagram.helpers.DividerItemDecoration;
 import com.codepath.instagram.helpers.Utils;
-import com.codepath.instagram.models.InstagramPost;
+import com.codepath.instagram.models.InstagramComment;
 import com.codepath.instagram.networking.InstagramClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -27,74 +24,66 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+public class CommentsActivity extends AppCompatActivity {
+    private static final String TAG = "CommentsActivity";
 
-public class HomeActivity extends AppCompatActivity {
-    private static final String TAG = "HomeActivity";
+    public static final String EXTRA_MEDIA_ID = "mediaId";
 
-    private List<InstagramPost> posts;
-    private InstagramPostsAdapter instagramPostsAdapter;
+    private String postMediaId;
+    private List<InstagramComment> comments;
+    private InstagramCommentsAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_comments);
+        RecyclerView rvInstagramComments = (RecyclerView)findViewById(R.id.rvInstagramComments);
 
-        RecyclerView rvInstagramPosts = (RecyclerView) findViewById(R.id.rvInstagramPosts);
+        postMediaId = getIntent().getStringExtra(EXTRA_MEDIA_ID);
+        comments = new ArrayList<>();
 
-        posts = new ArrayList<>();
-        instagramPostsAdapter = new InstagramPostsAdapter(posts);
-
-        fetchPopularPosts();
+        adapter = new InstagramCommentsAdapter(comments);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
         layoutManager.scrollToPosition(0);
-        rvInstagramPosts.setLayoutManager(layoutManager);
+        rvInstagramComments.setLayoutManager(layoutManager);
 
-        RecyclerView.ItemDecoration itemDecoration = new SimpleVerticalSpacerItemDecoration(24);
-        rvInstagramPosts.addItemDecoration(itemDecoration);
+        RecyclerView.ItemDecoration itemDecoration =
+                new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
+        rvInstagramComments.addItemDecoration(itemDecoration);
 
-        rvInstagramPosts.setAdapter(instagramPostsAdapter);
+        rvInstagramComments.setAdapter(adapter);
+
+        fetchCommentsFromNetwork();
     }
 
-    private void fetchPopularPosts() {
-        if(!isNetworkAvailable()) {
-            AlertDialogFragment.showAlertDialog(this, getString(R.string.network_error),
-                    getString(R.string.network_unavailable));
-        }
-
-        InstagramClient.getPopularPosts(new JsonHttpResponseHandler() {
+    private void fetchCommentsFromNetwork() {
+        InstagramClient.getPostComments(postMediaId, new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
-                    posts.addAll(Utils.decodePostsFromJson(response));
-                    instagramPostsAdapter.notifyDataSetChanged();
+                    comments.addAll(Utils.decodeCommentsFromJson(response));
+                    adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Log.wtf(TAG, "Unable to parse popular posts json");
+                    Log.wtf(TAG, "Unable to parse comments json");
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                AlertDialogFragment.showAlertDialog(HomeActivity.this, getString(R.string.network_error),
+                AlertDialogFragment.showAlertDialog(CommentsActivity.this, getString(R.string.network_error),
                         getString(R.string.network_error));
             }
         });
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_home, menu);
+        getMenuInflater().inflate(R.menu.menu_comments, menu);
         return true;
     }
 

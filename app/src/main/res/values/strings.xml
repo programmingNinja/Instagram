@@ -1,6 +1,14 @@
 <resources>
+
     <string name="app_name">Instagram</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_comments">COMMENTS</string>
+
+    <string name="menu_share">Share</string>
+
+    <string name="error_message_title">Error</string>
+    <string name="network_unavailable">Please connect to the network and try again.</string>
+    <string name="network_error">A network error occurred. Please try again.</string>
+
 </resources>
