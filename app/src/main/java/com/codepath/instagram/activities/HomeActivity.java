@@ -56,7 +56,7 @@ public class HomeActivity extends AppCompatActivity {
         String fileName = "popular.json";
         try {
             JSONObject jsonObject = Utils.loadJsonFromAsset(this, fileName);
-            posts.addAll(Utils.decodePostsFromJson(jsonObject));
+            posts.addAll(Utils.decodePostsFromJsonResponse(jsonObject));
             instagramPostsAdapter.notifyDataSetChanged();
         } catch (JSONException | IOException e){
             e.printStackTrace();
