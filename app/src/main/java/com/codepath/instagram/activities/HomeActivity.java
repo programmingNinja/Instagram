@@ -58,22 +58,18 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void fetchPopularPosts() {
-        if(!isNetworkAvailable()) {
+        if (!isNetworkAvailable()) {
             AlertDialogFragment.showAlertDialog(this, getString(R.string.network_error),
                     getString(R.string.network_unavailable));
+            return;
         }
 
         InstagramClient.getPopularPosts(new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
-                    posts.addAll(Utils.decodePostsFromJson(response));
-                    instagramPostsAdapter.notifyDataSetChanged();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Log.wtf(TAG, "Unable to parse popular posts json");
-                }
+                posts.addAll(Utils.decodePostsFromJsonResponse(response));
+                instagramPostsAdapter.notifyDataSetChanged();
             }
 
             @Override
