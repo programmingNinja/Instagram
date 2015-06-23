@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import com.codepath.instagram.R;
 import com.codepath.instagram.adapters.InstagramCommentsAdapter;
+import com.codepath.instagram.core.MainApplication;
 import com.codepath.instagram.fragments.AlertDialogFragment;
 import com.codepath.instagram.helpers.DividerItemDecoration;
 import com.codepath.instagram.helpers.Utils;
@@ -57,7 +58,7 @@ public class CommentsActivity extends AppCompatActivity {
     }
 
     private void fetchCommentsFromNetwork() {
-        InstagramClient.getPostComments(postMediaId, new JsonHttpResponseHandler() {
+        MainApplication.getRestClient().getPostComments(postMediaId, new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

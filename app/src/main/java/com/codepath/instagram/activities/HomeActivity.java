@@ -7,21 +7,19 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.codepath.instagram.R;
 import com.codepath.instagram.adapters.InstagramPostsAdapter;
+import com.codepath.instagram.core.MainApplication;
 import com.codepath.instagram.fragments.AlertDialogFragment;
 import com.codepath.instagram.helpers.SimpleVerticalSpacerItemDecoration;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramPost;
-import com.codepath.instagram.networking.InstagramClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -64,7 +62,7 @@ public class HomeActivity extends AppCompatActivity {
             return;
         }
 
-        InstagramClient.getPopularPosts(new JsonHttpResponseHandler() {
+        MainApplication.getRestClient().getUserFeed(new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
