@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 
 public class AlertDialogFragment extends DialogFragment {
     private final static String ARG_TITLE = "title";
@@ -38,8 +37,7 @@ public class AlertDialogFragment extends DialogFragment {
         return alertDialogBuilder.create();
     }
 
-    public static void showAlertDialog(AppCompatActivity fromActivity, String title, String message) {
-        FragmentManager fm = fromActivity.getSupportFragmentManager();
+    public static void showAlertDialog(FragmentManager fm, String title, String message) {
         AlertDialogFragment alertDialog = AlertDialogFragment.newInstance(title, message);
         alertDialog.show(fm, "fragment_alert");
     }

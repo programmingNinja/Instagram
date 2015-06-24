@@ -38,6 +38,30 @@ public class InstagramClient extends OAuthBaseClient {
         client.get(getAbsoluteUrl(relativeUrl), responseHandler);
     }
 
+    public void getUserSearch(String searchTerm, AsyncHttpResponseHandler responseHandler) {
+        String relativeUrl = "users/search";
+        RequestParams params = getDefaultRequestParams();
+        params.put("q", searchTerm);
+        client.get(getAbsoluteUrl(relativeUrl), params, responseHandler);
+    }
+
+    public void getTagSearch(String searchTerm, AsyncHttpResponseHandler responseHandler) {
+        String relativeUrl = "tags/search";
+        RequestParams params = getDefaultRequestParams();
+        params.put("q", searchTerm);
+        client.get(getAbsoluteUrl(relativeUrl), params, responseHandler);
+    }
+
+    public void getTagRecentMedia(String tag, AsyncHttpResponseHandler responseHandler) {
+        String relativeUrl = String.format("tags/%s/media/recent", tag);
+        client.get(getAbsoluteUrl(relativeUrl), responseHandler);
+    }
+
+    public void getUserRecentMedia(String userId, AsyncHttpResponseHandler responseHandler) {
+        String relativeUrl = String.format("users/%s/media/recent", userId);
+        client.get(getAbsoluteUrl(relativeUrl), responseHandler);
+    }
+
     private static String getAbsoluteUrl(String relativeUrl) {
         return REST_URL + relativeUrl;
     }

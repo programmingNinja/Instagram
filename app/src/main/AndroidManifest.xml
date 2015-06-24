@@ -41,6 +41,10 @@
             android:name=".activities.CommentsActivity"
             android:label="@string/title_activity_comments" >
         </activity>
+        <activity
+            android:name=".activities.PhotoGridActivity"
+            android:label="@string/title_activity_photo_grid" >
+        </activity>
     </application>
 
 </manifest>
