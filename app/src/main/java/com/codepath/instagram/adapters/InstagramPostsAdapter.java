@@ -109,7 +109,7 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
         });
 
         if (shouldShowViewAll) {
-            postItemViewHolder.tvViewAll.setText(String.format("view all %d comments", instagramPost.commentsCount));
+            postItemViewHolder.tvViewAll.setText(String.format("View all %d comments", instagramPost.commentsCount));
         }
 
         boolean shouldShowComments = instagramPost.commentsCount > 0;

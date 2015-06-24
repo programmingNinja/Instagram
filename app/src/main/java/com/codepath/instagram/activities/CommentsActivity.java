@@ -1,6 +1,7 @@
 package com.codepath.instagram.activities;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +12,7 @@ import com.codepath.instagram.R;
 import com.codepath.instagram.adapters.InstagramCommentsAdapter;
 import com.codepath.instagram.core.MainApplication;
 import com.codepath.instagram.fragments.AlertDialogFragment;
-import com.codepath.instagram.helpers.DividerItemDecoration;
+import com.codepath.instagram.helpers.SimpleVerticalSpacerItemDecoration;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramComment;
 import com.codepath.instagram.networking.InstagramClient;
@@ -36,6 +37,11 @@ public class CommentsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comments);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setElevation(0);
+        }
         RecyclerView rvInstagramComments = (RecyclerView)findViewById(R.id.rvInstagramComments);
 
         postMediaId = getIntent().getStringExtra(EXTRA_MEDIA_ID);
@@ -49,7 +55,7 @@ public class CommentsActivity extends AppCompatActivity {
         rvInstagramComments.setLayoutManager(layoutManager);
 
         RecyclerView.ItemDecoration itemDecoration =
-                new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
+                new SimpleVerticalSpacerItemDecoration(16);
         rvInstagramComments.addItemDecoration(itemDecoration);
 
         rvInstagramComments.setAdapter(adapter);
