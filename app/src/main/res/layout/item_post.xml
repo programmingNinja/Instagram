@@ -20,7 +20,7 @@
             android:layout_height="30dp"
             android:layout_gravity="center_vertical"
             app:actualImageScaleType="fitCenter"
-            app:placeholderImage="@mipmap/ic_launcher"
+            app:placeholderImage="@drawable/gray_oval"
             app:roundAsCircle="true" />
 
         <TextView
@@ -60,7 +60,7 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/llHeader"
         app:actualImageScaleType="fitCenter"
-        app:placeholderImage="@mipmap/ic_launcher" />
+        app:placeholderImage="@drawable/gray_rectangle" />
 
     <LinearLayout
         android:id="@+id/llFooter"
