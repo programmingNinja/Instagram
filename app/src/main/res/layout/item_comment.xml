@@ -12,6 +12,7 @@
         android:layout_width="36dp"
         android:layout_height="36dp"
         app:actualImageScaleType="fitCenter"
+        app:placeholderImage="@drawable/gray_oval"
         app:roundAsCircle="true" />
 
     <LinearLayout
