@@ -10,5 +10,5 @@
     <string name="error_message_title">Error</string>
     <string name="network_unavailable">Please connect to the network and try again.</string>
     <string name="network_error">A network error occurred. Please try again.</string>
-
+    <string name="network_error_title">Network Error</string>
 </resources>
