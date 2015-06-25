@@ -63,7 +63,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void fetchPopularPosts() {
         if (!isNetworkAvailable()) {
-            AlertDialogFragment.showAlertDialog(this, getString(R.string.network_error),
+            AlertDialogFragment.showAlertDialog(this, getString(R.string.network_error_title),
                     getString(R.string.network_unavailable));
             return;
         }
@@ -78,7 +78,7 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                AlertDialogFragment.showAlertDialog(HomeActivity.this, getString(R.string.network_error),
+                AlertDialogFragment.showAlertDialog(HomeActivity.this, getString(R.string.network_error_title),
                         getString(R.string.network_error));
             }
         });
