@@ -26,7 +26,7 @@ public class SearchTagResultsAdapter extends RecyclerView.Adapter<SearchTagResul
         this.tags = new ArrayList<>();
     }
 
-    public void addAll(List<InstagramSearchTag> tags) {
+    public void replaceAll(List<InstagramSearchTag> tags) {
         this.tags.clear();
         for (InstagramSearchTag tag : tags) {
             this.tags.add(tag);

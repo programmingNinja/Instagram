@@ -76,7 +76,7 @@ public class PostsFragment extends Fragment {
 
     private void fetchPosts() {
         if (!isNetworkAvailable()) {
-            AlertDialogFragment.showAlertDialog(getFragmentManager(), getString(R.string.network_error),
+            AlertDialogFragment.showAlertDialog(getChildFragmentManager(), getString(R.string.network_error),
                     getString(R.string.network_unavailable));
             return;
         }
@@ -101,7 +101,7 @@ public class PostsFragment extends Fragment {
                 if (listener != null) {
                     listener.hideProgressBar();
                 }
-                AlertDialogFragment.showAlertDialog(getFragmentManager(), getString(R.string.network_error),
+                AlertDialogFragment.showAlertDialog(getChildFragmentManager(), getString(R.string.network_error),
                         getString(R.string.network_error));
             }
         });

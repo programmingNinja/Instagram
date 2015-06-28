@@ -67,7 +67,7 @@ public class SearchUsersResultFragment extends Fragment {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 List<InstagramUser> users = Utils.decodeUsersFromJsonResponse(response);
-                searchResultsAdapter.addAll(users);
+                searchResultsAdapter.replaceAll(users);
             }
 
             @Override

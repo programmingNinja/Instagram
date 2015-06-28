@@ -35,8 +35,7 @@ public class SearchFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        fragmentStatePagerAdapter = new SearchFragmentStatePagerAdapter(getFragmentManager(), getActivity());
-
+        fragmentStatePagerAdapter = new SearchFragmentStatePagerAdapter(getChildFragmentManager(), getActivity());
     }
 
     @Override

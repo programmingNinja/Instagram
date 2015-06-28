@@ -67,7 +67,7 @@ public class SearchTagsResultFragment extends Fragment {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 List<InstagramSearchTag> searchTags = Utils.decodeSearchTagsFromJsonResponse(response);
-                searchResultsAdapter.addAll(searchTags);
+                searchResultsAdapter.replaceAll(searchTags);
             }
 
             @Override

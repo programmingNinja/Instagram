@@ -25,7 +25,7 @@ public class SearchUserResultsAdapter extends RecyclerView.Adapter<SearchUserRes
         this.users = new ArrayList<>();
     }
 
-    public void addAll(List<InstagramUser> users) {
+    public void replaceAll(List<InstagramUser> users) {
         this.users.clear();
         for (InstagramUser user : users) {
             this.users.add(user);
