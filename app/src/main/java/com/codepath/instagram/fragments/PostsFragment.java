@@ -21,6 +21,7 @@ import com.codepath.instagram.core.MainApplication;
 import com.codepath.instagram.helpers.SimpleVerticalSpacerItemDecoration;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramPost;
+import com.codepath.instagram.persistence.InstagramClientDatabase;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -34,6 +35,7 @@ public class PostsFragment extends Fragment {
 
     private List<InstagramPost> posts;
     private InstagramPostsAdapter instagramPostsAdapter;
+    InstagramClientDatabase database;
 
     private OnFragmentInteractionListener listener;
 
@@ -54,6 +56,7 @@ public class PostsFragment extends Fragment {
         setHasOptionsMenu(true);
         posts = new ArrayList<>();
         instagramPostsAdapter = new InstagramPostsAdapter(posts);
+        database = MainApplication.sharedApplication().getDatabase();
     }
 
     @Override
@@ -93,6 +96,9 @@ public class PostsFragment extends Fragment {
         if (!isNetworkAvailable()) {
             AlertDialogFragment.showAlertDialog(getChildFragmentManager(), getString(R.string.network_error),
                     getString(R.string.network_unavailable));
+            List<InstagramPost> posts = database.getAllInstagramPosts();
+            instagramPostsAdapter.replaceAll(posts);
+
             return;
         }
 
@@ -107,8 +113,13 @@ public class PostsFragment extends Fragment {
                 if (listener != null) {
                     listener.hideProgressBar();
                 }
-                instagramPostsAdapter.replaceAll(Utils.decodePostsFromJsonResponse(response));
+                List<InstagramPost> posts = Utils.decodePostsFromJsonResponse(response);
+                instagramPostsAdapter.replaceAll(posts);
+
+                database.clearDatabase();
+                database.addInstagramPosts(posts);
                 swpContainer.setRefreshing(false);
+
             }
 
             @Override

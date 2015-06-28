@@ -45,6 +45,10 @@
             android:name=".activities.PhotoGridActivity"
             android:label="@string/title_activity_photo_grid" >
         </activity>
+
+        <service
+            android:name=".services.PostsFetcherService"
+            android:exported="false"/>
     </application>
 
 </manifest>
