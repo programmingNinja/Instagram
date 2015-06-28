@@ -23,7 +23,7 @@
     <string name="tag_count_postfix_plural">posts</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_photo_grid">PhotoGridActivity</string>
+    <string name="title_activity_photo_grid">Photos</string>
 
     <string name="hello_world">Hello world!</string>
 
