@@ -10,11 +10,11 @@ import android.view.MenuItem;
 
 import com.codepath.instagram.R;
 import com.codepath.instagram.adapters.InstagramCommentsAdapter;
+import com.codepath.instagram.core.MainApplication;
 import com.codepath.instagram.fragments.AlertDialogFragment;
 import com.codepath.instagram.helpers.SimpleVerticalSpacerItemDecoration;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramComment;
-import com.codepath.instagram.networking.InstagramClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -63,7 +63,7 @@ public class CommentsActivity extends AppCompatActivity {
     }
 
     private void fetchCommentsFromNetwork() {
-        InstagramClient.getPostComments(postMediaId, new JsonHttpResponseHandler() {
+        MainApplication.getRestClient().getPostComments(postMediaId, new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -73,7 +73,7 @@ public class CommentsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                AlertDialogFragment.showAlertDialog(CommentsActivity.this, getString(R.string.network_error),
+                AlertDialogFragment.showAlertDialog(getSupportFragmentManager(), getString(R.string.network_error),
                         getString(R.string.network_error));
             }
         });
