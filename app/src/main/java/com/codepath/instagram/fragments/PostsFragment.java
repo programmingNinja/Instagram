@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -37,6 +38,7 @@ public class PostsFragment extends Fragment {
     private OnFragmentInteractionListener listener;
 
     RecyclerView rvInstagramPosts;
+    SwipeRefreshLayout swpContainer;
 
     public static PostsFragment newInstance() {
         return new PostsFragment();
@@ -60,6 +62,7 @@ public class PostsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_posts, container, false);
 
         rvInstagramPosts = (RecyclerView)view.findViewById(R.id.rvInstagramPosts);
+        swpContainer = (SwipeRefreshLayout)view.findViewById(R.id.swpContainer);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false);
@@ -70,6 +73,18 @@ public class PostsFragment extends Fragment {
         rvInstagramPosts.addItemDecoration(itemDecoration);
 
         rvInstagramPosts.setAdapter(instagramPostsAdapter);
+        swpContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetchPosts();
+            }
+        });
+
+        swpContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
         fetchPosts();
         return view;
     }
@@ -92,8 +107,8 @@ public class PostsFragment extends Fragment {
                 if (listener != null) {
                     listener.hideProgressBar();
                 }
-                posts.addAll(Utils.decodePostsFromJsonResponse(response));
-                instagramPostsAdapter.notifyDataSetChanged();
+                instagramPostsAdapter.replaceAll(Utils.decodePostsFromJsonResponse(response));
+                swpContainer.setRefreshing(false);
             }
 
             @Override
@@ -103,6 +118,7 @@ public class PostsFragment extends Fragment {
                 }
                 AlertDialogFragment.showAlertDialog(getChildFragmentManager(), getString(R.string.network_error),
                         getString(R.string.network_error));
+                swpContainer.setRefreshing(false);
             }
         });
     }

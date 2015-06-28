@@ -53,6 +53,14 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
         this.posts = (posts == null ? new ArrayList<InstagramPost>() : posts);
     }
 
+    public void replaceAll(List<InstagramPost> posts) {
+        this.posts.clear();
+        for (InstagramPost post : posts) {
+            this.posts.add(post);
+        }
+        this.notifyDataSetChanged();
+    }
+
     @Override
     public PostItemViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
         View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_post, viewGroup, false);
