@@ -11,7 +11,6 @@ import com.codepath.instagram.adapters.InstagramPostsAdapter;
 import com.codepath.instagram.helpers.DividerItemDecoration;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramPost;
-import com.codepath.instagram.networking.InstagramClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -53,7 +52,7 @@ public class HomeActivity extends BaseActivity {
 
     private void fetchPopularFeed() {
         if (Utils.isNetworkAvailable(this.getApplicationContext())) {
-            InstagramClient.getPopularFeed(new JsonHttpResponseHandler() {
+            instagramClient.getUserFeed(new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     mInstagramPostsList.addAll(Utils.decodePostsFromJsonResponse(response));
@@ -87,6 +86,7 @@ public class HomeActivity extends BaseActivity {
                                       JSONObject errorResponse) {
                     Log.e(TAG, ">onFailure\n\n" + "Status Code - " + statusCode
                             + "\n\n Failure reason: \n\n" + " null JSONObject response");
+                    throwable.printStackTrace();
                     showErrorMsg();
                 }
             });

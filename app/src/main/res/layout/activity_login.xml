@@ -1,0 +1,33 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/activity_horizontal_margin"
+                tools:context="com.codepath.instagram.activities.LoginActivity">
+
+    <EditText
+            android:id="@+id/etUsername"
+            android:hint="@string/hint_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    <EditText
+            android:id="@+id/etPassword"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:hint="@string/hint_password"
+            android:layout_below="@id/etUsername"
+            android:inputType="textPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    <Button
+            android:id="@+id/btLogin"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:textColor="@android:color/white"
+            android:background="@color/blue_text"
+            android:text="@string/bt_login"
+            android:layout_below="@id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+</RelativeLayout>

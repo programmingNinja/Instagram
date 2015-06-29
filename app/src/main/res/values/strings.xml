@@ -22,4 +22,9 @@
     <string name="cd_comment">Comment</string>
     <string name="cd_share">Share post</string>
     <string name="menu_share">Share Post</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="hint_password">Password</string>
+    <string name="bt_login">Login</string>
+    <string name="title_activity_home">Home Feed</string>
+    <string name="redirect_url">codepath.com</string>
 </resources>
