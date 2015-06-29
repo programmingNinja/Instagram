@@ -13,4 +13,13 @@
         Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus
         PageMaker including versions of Lorem Ipsum
     </string>
+    <string name="err_cannotload">Could not load the feed at this moment.</string>
+    <string name="err_no_internet">Please check your internet connectivity and try again</string>
+    <string name="view_all_comments_hint">View all 125 comments</string>
+    <string name="view_comments_text">View all %d comments</string>
+    <string name="title_activity_comments">COMMENTS</string>
+    <string name="cd_like">Like this post</string>
+    <string name="cd_comment">Comment</string>
+    <string name="cd_share">Share post</string>
+    <string name="menu_share">Share Post</string>
 </resources>

@@ -1,18 +1,40 @@
 package com.codepath.instagram.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.codepath.instagram.R;
+import com.codepath.instagram.activities.CommentsActivity;
+import com.codepath.instagram.helpers.ShareIntent;
 import com.codepath.instagram.helpers.Utils;
+import com.codepath.instagram.models.InstagramComment;
 import com.codepath.instagram.models.InstagramPost;
+import com.facebook.common.executors.CallerThreadExecutor;
+import com.facebook.common.references.CloseableReference;
+import com.facebook.datasource.DataSource;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.Priority;
+import com.facebook.imagepipeline.core.ImagePipeline;
+import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
+import com.facebook.imagepipeline.image.CloseableImage;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +43,8 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
 
     private List<InstagramPost> mSamplePostList;
     private Context mContext;
+
+    private static final int MAX_COMMENTS_TO_SHOW = 2;
 
     public InstagramPostsAdapter(List<InstagramPost> samplePostList, Context context) {
         this.mSamplePostList = (samplePostList == null) ? new ArrayList<InstagramPost>() : samplePostList;
@@ -40,7 +64,7 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
         configureView(postItemViewHolder, instagramPost);
     }
 
-    private void configureView(PostItemViewHolder postItemViewHolder, InstagramPost instagramPost) {
+    private void configureView(PostItemViewHolder postItemViewHolder, final InstagramPost instagramPost) {
 
         postItemViewHolder.tvCaption.setText(Utils.formatCaptionText(mContext,
                 instagramPost.user.userName, instagramPost.caption));
@@ -58,6 +82,56 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
         postItemViewHolder.sdvPhoto.setImageURI(Uri.parse(instagramPost.image.imageUrl));
         postItemViewHolder.sdvPhoto.setAspectRatio(calculateImageAspectRatio(instagramPost));
         postItemViewHolder.sdvProfileImage.setImageURI(Uri.parse(instagramPost.user.profilePictureUrl));
+
+        // Only show the "View All" if there are more than 2 comments
+        boolean shouldShowViewAll = instagramPost.commentsCount > MAX_COMMENTS_TO_SHOW;
+
+        postItemViewHolder.tvViewAll.setVisibility(shouldShowViewAll ? View.VISIBLE : View.GONE);
+
+        if (shouldShowViewAll) {
+            postItemViewHolder.tvViewAll.setText(mContext.getString(R.string.view_comments_text, instagramPost.commentsCount));
+        }
+
+        postItemViewHolder.tvViewAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startCommentsActivity(instagramPost);
+            }
+        });
+
+        boolean shouldShowComments = instagramPost.commentsCount > 0;
+        postItemViewHolder.llComments.setVisibility(shouldShowComments ? View.VISIBLE : View.GONE);
+        if (shouldShowComments) {
+            populateComments(postItemViewHolder.llComments, instagramPost.comments);
+        }
+
+        postItemViewHolder.ivShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleShareButtonPress(v, instagramPost);
+            }
+        });
+    }
+
+    private void populateComments(LinearLayout llContainer, List<InstagramComment> comments) {
+        llContainer.removeAllViews();
+
+        int commentsCount = comments.size();
+        int initialCommentIndex = Math.max(0, commentsCount - MAX_COMMENTS_TO_SHOW);
+
+        for (int i = initialCommentIndex; i < commentsCount; i++) {
+            InstagramComment comment = comments.get(i);
+            View commentView = LayoutInflater.from(mContext).inflate(R.layout.layout_item_comment, llContainer, false);
+            TextView textView = (TextView) commentView.findViewById(R.id.tvComment);
+            textView.setText(Utils.formatCaptionText(mContext, comment.user.userName, comment.text));
+            llContainer.addView(textView);
+        }
+    }
+
+    private void startCommentsActivity(InstagramPost instagramPost) {
+        Intent intent = new Intent(mContext, CommentsActivity.class);
+        intent.putExtra(CommentsActivity.KEY_MEDIA_ID, instagramPost.mediaId);
+        mContext.startActivity(intent);
     }
 
     private float calculateImageAspectRatio(InstagramPost instagramPost) {
@@ -73,8 +147,10 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
 
     public static final class PostItemViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tvUserName, tvRelativeTimestamp, tvCaption, tvLikes;
+        TextView tvUserName, tvRelativeTimestamp, tvCaption, tvLikes, tvViewAll;
         SimpleDraweeView sdvProfileImage, sdvPhoto;
+        LinearLayout llComments;
+        ImageView ivLike, ivShare, ivComment;
 
         public PostItemViewHolder(View itemView) {
             super(itemView);
@@ -88,6 +164,84 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
             sdvPhoto = (SimpleDraweeView) itemView.findViewById(R.id.sdvPhoto);
             tvCaption = (TextView) itemView.findViewById(R.id.tvCaption);
             tvLikes = (TextView) itemView.findViewById(R.id.tvLikes);
+            tvViewAll = (TextView) itemView.findViewById(R.id.tvViewAll);
+            llComments = (LinearLayout)itemView.findViewById(R.id.llComments);
+            ivLike = (ImageView)itemView.findViewById(R.id.ivLike);
+            ivShare = (ImageView)itemView.findViewById(R.id.ivShare);
+            ivComment = (ImageView)itemView.findViewById(R.id.ivComment);
+        }
+    }
+
+    private void handleShareButtonPress(View ivShare, InstagramPost instagramPost) {
+        PopupMenu popup = new PopupMenu(ivShare.getContext(), ivShare);
+        popup.getMenuInflater().inflate(R.menu.menu_share, popup.getMenu());
+        popup.setOnMenuItemClickListener(new SharePopupMenuClickListener(ivShare.getContext(), instagramPost));
+        popup.show();
+    }
+
+    /**
+     * Custom click listener to keep track of which post we popped up a menu for
+     */
+    private class SharePopupMenuClickListener implements android.widget.PopupMenu.OnMenuItemClickListener, PopupMenu.OnMenuItemClickListener {
+
+        private final String TAG = SharePopupMenuClickListener.class.getSimpleName();
+        private InstagramPost tappedPost;
+        private Context context;
+
+        public SharePopupMenuClickListener(Context context, InstagramPost post) {
+            this.tappedPost = post;
+            this.context = context;
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.menu_share_photo:
+                    shareFrescoBitmap();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public void shareFrescoBitmap() {
+            Uri imageUri = Uri.parse(tappedPost.image.imageUrl);
+
+            ImageRequest imageRequest = ImageRequestBuilder
+                    .newBuilderWithSource(imageUri)
+                    .setRequestPriority(Priority.HIGH)
+                    .setLowestPermittedRequestLevel(ImageRequest.RequestLevel.FULL_FETCH)
+                    .build();
+
+            ImagePipeline imagePipeline = Fresco.getImagePipeline();
+
+            DataSource<CloseableReference<CloseableImage>> dataSource =
+                    imagePipeline.fetchDecodedImage(imageRequest, this);
+            try {
+                dataSource.subscribe(new BaseBitmapDataSubscriber() {
+                    @Override
+                    public void onNewResultImpl(@Nullable Bitmap bitmap) {
+                        if (bitmap == null) {
+                            Log.wtf(TAG, "Bitmap data source returned success, but bitmap null");
+                            return;
+                        }
+
+                        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(),
+                                bitmap, "Instagram Post", null);
+
+                        Uri uri = Uri.parse(path);
+                        Intent intent = ShareIntent.getImageIntent(uri);
+                        context.startActivity(intent);
+                    }
+
+                    @Override
+                    public void onFailureImpl(DataSource dataSource) {
+                        Log.wtf(TAG, "Failure while trying to get bitmap from Fresco");
+                    }
+                }, CallerThreadExecutor.getInstance());
+            } finally {
+                dataSource.close();
+            }
         }
     }
 }
