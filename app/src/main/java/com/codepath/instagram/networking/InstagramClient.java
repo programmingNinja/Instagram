@@ -90,6 +90,5 @@ public class InstagramClient extends OAuthBaseClient {
         RequestParams params = new RequestParams("access_token", client.getAccessToken().getToken());
         AsyncHttpClient syncHttpClient = new SyncHttpClient();
         syncHttpClient.get(getAbsoluteUrl(relativeUrl), params, responseHandler);
-
     }
 }
