@@ -1,11 +1,15 @@
 package com.codepath.instagram.fragments;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,13 +23,10 @@ import com.codepath.instagram.R;
 import com.codepath.instagram.adapters.InstagramPostsAdapter;
 import com.codepath.instagram.core.MainApplication;
 import com.codepath.instagram.helpers.SimpleVerticalSpacerItemDecoration;
-import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramPost;
+import com.codepath.instagram.models.InstagramPosts;
 import com.codepath.instagram.persistence.InstagramClientDatabase;
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.apache.http.Header;
-import org.json.JSONObject;
+import com.codepath.instagram.services.PostsFetcherService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,33 +106,7 @@ public class PostsFragment extends Fragment {
         if (listener != null) {
             listener.showProgressBar();
         }
-
-        MainApplication.getRestClient().getUserFeed(new JsonHttpResponseHandler() {
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                if (listener != null) {
-                    listener.hideProgressBar();
-                }
-                List<InstagramPost> posts = Utils.decodePostsFromJsonResponse(response);
-                instagramPostsAdapter.replaceAll(posts);
-
-                database.clearDatabase();
-                database.addInstagramPosts(posts);
-                swpContainer.setRefreshing(false);
-
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                if (listener != null) {
-                    listener.hideProgressBar();
-                }
-                AlertDialogFragment.showAlertDialog(getChildFragmentManager(), getString(R.string.network_error),
-                        getString(R.string.network_error));
-                swpContainer.setRefreshing(false);
-            }
-        });
+        startPostsFetcherService();
     }
 
     private boolean isNetworkAvailable() {
@@ -153,6 +128,21 @@ public class PostsFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        // Register for the particular broadcast based on ACTION string
+        IntentFilter filter = new IntentFilter(PostsFetcherService.ACTION);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(postsFetchedReceiver, filter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // Unregister the listener when the application is paused
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(postsFetchedReceiver);
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         listener = null;
@@ -168,4 +158,42 @@ public class PostsFragment extends Fragment {
         inflater.inflate(R.menu.menu_home, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
+
+    private void handleNewPostsReceivedSuccess(List<InstagramPost> newPosts) {
+        if (listener != null) {
+            listener.hideProgressBar();
+        }
+        instagramPostsAdapter.replaceAll(newPosts);
+        swpContainer.setRefreshing(false);
+    }
+
+    private void handlerNewPostsReceivedFailure() {
+        if (listener != null) {
+            listener.hideProgressBar();
+        }
+        AlertDialogFragment.showAlertDialog(getChildFragmentManager(), getString(R.string.network_error),
+                getString(R.string.network_error));
+        swpContainer.setRefreshing(false);
+    }
+
+    private void startPostsFetcherService() {
+        Activity activity = getActivity();
+        if (activity != null) {
+            Intent intent = new Intent(activity, PostsFetcherService.class);
+            activity.startService(intent);
+        }
+    }
+
+    private BroadcastReceiver postsFetchedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int resultCode = intent.getIntExtra(PostsFetcherService.EXTRA_RESULT_CODE, Activity.RESULT_CANCELED);
+            if (resultCode == Activity.RESULT_OK) {
+                InstagramPosts postsWrapper = (InstagramPosts)intent.getSerializableExtra(PostsFetcherService.EXTRA_RESULT_POSTS);
+                handleNewPostsReceivedSuccess(postsWrapper.posts);
+            } else {
+                handlerNewPostsReceivedFailure();
+            }
+        }
+    };
 }

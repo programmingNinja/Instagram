@@ -3,8 +3,10 @@ package com.codepath.instagram.networking;
 import android.content.Context;
 
 import com.codepath.oauth.OAuthBaseClient;
+import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
 
 import org.scribe.builder.api.Api;
 
@@ -70,5 +72,13 @@ public class InstagramClient extends OAuthBaseClient {
         RequestParams params = new RequestParams();
         params.put("client_id", REST_CONSUMER_KEY);
         return params;
+    }
+
+    public void getUserFeedSynchronously(AsyncHttpResponseHandler responseHandler) {
+        String relativeUrl = "users/self/feed";
+        RequestParams params = new RequestParams("access_token", client.getAccessToken().getToken());
+        AsyncHttpClient syncHttpClient = new SyncHttpClient();
+        syncHttpClient.get(getAbsoluteUrl(relativeUrl), params, responseHandler);
+
     }
 }

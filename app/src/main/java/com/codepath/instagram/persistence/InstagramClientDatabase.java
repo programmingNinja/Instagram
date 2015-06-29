@@ -130,12 +130,19 @@ public class InstagramClientDatabase extends SQLiteOpenHelper {
     public synchronized void clearDatabase() {
         SQLiteDatabase db = getWritableDatabase();
 
-        db.execSQL("DELETE FROM " + TABLE_USERS);
-        db.execSQL("DELETE FROM " + TABLE_IMAGES);
-        db.execSQL("DELETE FROM " + TABLE_COMMENTS);
-        db.execSQL("DELETE FROM " + TABLE_POSTS);
-        db.execSQL("DELETE FROM " + TABLE_POST_COMMENTS);
+        deleteIfExists(TABLE_USERS, db);
+        deleteIfExists(TABLE_IMAGES, db);
+        deleteIfExists(TABLE_COMMENTS, db);
+        deleteIfExists(TABLE_POSTS, db);
+        deleteIfExists(TABLE_POST_COMMENTS, db);
+
         closeDatabase();
+    }
+
+    public void deleteIfExists(String tableName, SQLiteDatabase writeableDatabase) {
+        if (existsTable(tableName, writeableDatabase)) {
+            writeableDatabase.execSQL("DELETE FROM " + tableName);
+        }
     }
 
     public synchronized void addInstagramPosts(List<InstagramPost> posts) {
@@ -332,5 +339,16 @@ public class InstagramClientDatabase extends SQLiteOpenHelper {
             throw new Exception(errorText);
         }
         return index;
+    }
+
+    public boolean existsTable(String tableName, SQLiteDatabase readableDatabase) {
+        boolean exists = false;
+        Cursor cursor = readableDatabase.rawQuery("SELECT DISTINCT tbl_name FROM sqlite_master WHERE tbl_name = '"
+                + tableName + "'", null);
+        if (cursor != null) {
+            exists = cursor.getCount() > 0;
+            cursor.close();
+        }
+        return exists;
     }
 }
