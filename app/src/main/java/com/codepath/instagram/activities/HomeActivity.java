@@ -1,17 +1,24 @@
 package com.codepath.instagram.activities;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.codepath.instagram.R;
 import com.codepath.instagram.adapters.HomeFragmentStatePagerAdapter;
+import com.codepath.instagram.core.MainApplication;
 import com.codepath.instagram.fragments.PostsFragment;
 import com.codepath.instagram.helpers.NonSwipeableViewPager;
+import com.codepath.instagram.models.InstagramUser;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.json.JSONObject;
 
 
 public class HomeActivity extends AppCompatActivity implements PostsFragment.OnFragmentInteractionListener {
@@ -30,7 +37,7 @@ public class HomeActivity extends AppCompatActivity implements PostsFragment.OnF
         if (actionBar != null) {
             actionBar.setElevation(0);
         }
-
+        updateLoggedInUserInfo();
         vpHome = (NonSwipeableViewPager)findViewById(R.id.vpHome);
         tlHomeBar = (TabLayout)findViewById(R.id.tlHomeBar);
 
@@ -38,6 +45,23 @@ public class HomeActivity extends AppCompatActivity implements PostsFragment.OnF
                 new HomeFragmentStatePagerAdapter(getSupportFragmentManager(), this);
         vpHome.setAdapter(fragmentStatePagerAdapter);
         tlHomeBar.setupWithViewPager(vpHome);
+    }
+
+    public void updateLoggedInUserInfo() {
+        MainApplication.getRestClient().getUserInfo(new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                JSONObject jsonUser = response.optJSONObject("data");
+                InstagramUser user = InstagramUser.fromJson(jsonUser);
+                MainApplication.sharedApplication().setCurrentUser(user);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.d(TAG, "Failed in trying to get current user info");
+            }
+        });
     }
 
     @Override
