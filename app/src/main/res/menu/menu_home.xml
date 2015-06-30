@@ -1,6 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" tools:context=".HomeActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+            android:id="@+id/miActionProgress"
+            android:title="@string/pb_loading"
+            android:visible="false"
+            app:showAsAction="always"
+            app:actionLayout="@layout/action_view_progress" />
 </menu>

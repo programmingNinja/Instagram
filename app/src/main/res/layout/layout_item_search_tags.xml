@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/rlContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:paddingLeft="28dp"
+        android:paddingStart="28dp"
+        android:paddingEnd="16dp"
+        android:paddingRight="16dp">
+
+    <TextView
+            android:id="@+id/tvTag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="bold"
+            android:hint="@string/hint_tag_result"
+            android:textColor="@color/gray_text"
+            android:textSize="14sp" />
+
+    <TextView
+            android:id="@+id/tvPostCount"
+            android:layout_marginTop="5dp"
+            android:layout_below="@id/tvTag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:hint="@string/hint_posts"
+            android:textColor="@color/light_gray_text"
+            android:textSize="14sp" />
+</RelativeLayout>

@@ -27,4 +27,11 @@
     <string name="bt_login">Login</string>
     <string name="title_activity_home">Home Feed</string>
     <string name="redirect_url">codepath.com</string>
+    <string name="pb_loading">Loading....</string>
+    <string name="search">Search Tags or Users</string>
+    <string name="hint_posts">5,345 posts</string>
+    <string name="hint_tag_result">#YOLO</string>
+    <string name="tag_count_postfix">post</string>
+    <string name="tag_count_postfix_plural">posts</string>
+    <string name="title_activity_photos_grid">PhotosGridActivity</string>
 </resources>

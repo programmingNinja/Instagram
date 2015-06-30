@@ -9,7 +9,6 @@ import com.codepath.instagram.adapters.InstagramCommentsAdapter;
 import com.codepath.instagram.helpers.DividerItemDecoration;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramComment;
-import com.codepath.instagram.networking.InstagramClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import org.apache.http.Header;
 import org.json.JSONObject;
@@ -46,7 +45,7 @@ public class CommentsActivity extends BaseActivity {
 
     private void fetchPostComments() {
         if (Utils.isNetworkAvailable(this.getApplicationContext())) {
-            InstagramClient.getPostComments(postMediaId, new JsonHttpResponseHandler() {
+            instagramClient.getPostComments(postMediaId, new JsonHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
