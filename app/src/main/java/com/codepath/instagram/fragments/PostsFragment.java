@@ -1,6 +1,12 @@
 package com.codepath.instagram.fragments;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,12 +17,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.codepath.instagram.R;
 import com.codepath.instagram.adapters.InstagramPostsAdapter;
+import com.codepath.instagram.core.MainApplication;
+import com.codepath.instagram.database.InstagramClientDatabase;
 import com.codepath.instagram.helpers.DividerItemDecoration;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramPost;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import org.apache.http.Header;
-import org.json.JSONArray;
+import com.codepath.instagram.models.InstagramPosts;
+import com.codepath.instagram.services.BackgroundFeedService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,6 +38,7 @@ public class PostsFragment extends BaseFragment {
     private RecyclerView mRecyclerView;
     private List<InstagramPost> mInstagramPostsList;
     private InstagramPostsAdapter mInstagramPostsAdapter;
+    private InstagramClientDatabase database;
 
     public static PostsFragment newInstance() {
         return new PostsFragment();
@@ -43,12 +51,29 @@ public class PostsFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        database = MainApplication.sharedApplication().getDatabase();
         View view = inflater.inflate(R.layout.fragment_posts, container, false);
 
         initUi(view);
-        fetchUserFeed();
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Register for the particular broadcast based on ACTION string
+        IntentFilter filter = new IntentFilter(BackgroundFeedService.ACTION_FETCH_NEW_POSTS);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(postsLocalBroadcastRcvr, filter);
+        fetchUserFeed();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // Unregister the listener when the application is paused
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(postsLocalBroadcastRcvr);
     }
 
     private void initUi(View v) {
@@ -111,55 +136,46 @@ public class PostsFragment extends BaseFragment {
     private void fetchUserFeed() {
         if (Utils.isNetworkAvailable(mContext)) {
             showProgressBar(true);
-            instagramClient.getSelfFeed(new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    mInstagramPostsList.clear();
-                    mInstagramPostsList.addAll(Utils.decodePostsFromJsonResponse(response));
-                    mInstagramPostsAdapter.notifyDataSetChanged();
-                    swipeRefreshLayout.setRefreshing(false);
-                    showProgressBar(false);
-                }
-
-                @Override
-                public void onFailure(int statusCode,
-                                      Header[] headers,
-                                      String responseString,
-                                      Throwable throwable) {
-                    Log.e(TAG, ">onFailure\n\n" + "Status Code - " + statusCode
-                            + "\n\n Failure reason: \n\n" + responseString);
-                    handleErrorResult();
-                }
-
-                @Override
-                public void onFailure(int statusCode,
-                                      Header[] headers,
-                                      Throwable throwable,
-                                      JSONArray errorResponse) {
-                    Log.e(TAG, ">onFailure\n\n" + "Status Code - " + statusCode
-                            + "\n\n Failure reason: \n\n" + " null JSONArray response");
-                    handleErrorResult();
-                }
-
-                @Override
-                public void onFailure(int statusCode,
-                                      Header[] headers,
-                                      Throwable throwable,
-                                      JSONObject errorResponse) {
-                    Log.e(TAG, ">onFailure\n\n" + "Status Code - " + statusCode
-                            + "\n\n Failure reason: \n\n" + " null JSONObject response");
-                    throwable.printStackTrace();
-                    handleErrorResult();
-                }
-            });
+            startPostService();
         } else {
             showErrorMsg(getString(R.string.err_no_internet));
+            handlePostsReceived(database.getAllInstagramPosts());
         }
+    }
+
+    private void startPostService() {
+        BackgroundFeedService.startActionFetchNewPosts(getActivity());
     }
 
     private void handleErrorResult() {
         showErrorMsg();
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    private BroadcastReceiver postsLocalBroadcastRcvr = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                int resultCode = intent.getIntExtra(BackgroundFeedService.EXTRA_RESULT_CODE, Activity.RESULT_CANCELED);
+                showProgressBar(false);
+                if (resultCode == Activity.RESULT_OK) {
+                    InstagramPosts postsWrapper = (InstagramPosts) intent.getSerializableExtra(BackgroundFeedService.EXTRA_RESULT_POSTS);
+                    if (postsWrapper.posts != null && postsWrapper.posts.size() > 0) {
+                        handlePostsReceived(postsWrapper.posts);
+                    }
+                } else {
+                    handleErrorResult();
+                }
+            }
+        }
+    };
+
+    private void handlePostsReceived(List<InstagramPost> posts) {
+        mInstagramPostsList.clear();
+        mInstagramPostsList.addAll(posts);
+        mInstagramPostsAdapter.notifyDataSetChanged();
+        swipeRefreshLayout.setRefreshing(false);
+        showProgressBar(false);
     }
 
     public static final String SAMPLE_JSON_FILE_NAME = "popular.json";

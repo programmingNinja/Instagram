@@ -44,6 +44,11 @@
             android:name=".activities.PhotosGridActivity"
             android:label="@string/title_activity_photos_grid" >
         </activity>
+
+        <service
+            android:name=".services.BackgroundFeedService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>

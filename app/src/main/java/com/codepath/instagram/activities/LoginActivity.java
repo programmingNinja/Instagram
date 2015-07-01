@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import com.codepath.instagram.R;
 import com.codepath.instagram.networking.InstagramClient;
+import com.codepath.instagram.services.BackgroundFeedService;
 import com.codepath.oauth.OAuthLoginActivity;
 
 public class LoginActivity extends OAuthLoginActivity<InstagramClient> {
@@ -41,6 +42,7 @@ public class LoginActivity extends OAuthLoginActivity<InstagramClient> {
         if (getClient().isAuthenticated()) {
             Intent i = new Intent(this, HomeActivity.class);
             startActivity(i);
+            BackgroundFeedService.startActionGetUserInfo(this);
             this.finish();
         }
     }

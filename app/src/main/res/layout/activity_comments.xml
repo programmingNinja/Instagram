@@ -2,8 +2,49 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" >
 
+    <RelativeLayout
+            android:id="@+id/rlWriteComment"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true" >
+
+        <ImageButton
+                android:id="@+id/btnSubmitComment"
+                android:textColor="@android:color/white"
+                android:background="@color/blue_text"
+                android:src="@android:drawable/ic_menu_send"
+                android:contentDescription="@string/cd_submit"
+                android:padding="13dp"
+                android:text="@string/bt_send"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"/>
+
+        <EditText
+                android:id="@+id/etComment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@id/btnSubmitComment"
+                android:layout_alignTop="@+id/btnSubmitComment"
+                android:layout_toLeftOf="@+id/btnSubmitComment"
+                android:layout_toStartOf="@id/btnSubmitComment"
+                android:imeOptions="actionDone"
+                android:hint="@string/hint_add_comment"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:lineSpacingMultiplier="1.2"
+                android:singleLine="false"
+                android:textSize="14sp"
+                android:textColor="@color/gray_text"
+                android:textColorHint="@color/light_gray_text"
+                android:inputType="textNoSuggestions"/>
+
+    </RelativeLayout>
+
     <android.support.v7.widget.RecyclerView
             android:id="@+id/rvComments"
+            android:layout_above="@id/rlWriteComment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

@@ -34,4 +34,7 @@
     <string name="tag_count_postfix">post</string>
     <string name="tag_count_postfix_plural">posts</string>
     <string name="title_activity_photos_grid">PhotosGridActivity</string>
+    <string name="bt_send">Send</string>
+    <string name="hint_add_comment">Add a Comment</string>
+    <string name="cd_submit">Submit</string>
 </resources>
