@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.codepath.instagram.R;
 import com.codepath.instagram.activities.PhotosGridActivity;
+import com.codepath.instagram.activities.ProfileActivity;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramSearchTag;
 import com.codepath.instagram.models.InstagramUser;
@@ -111,9 +112,15 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<RecyclerView.View
         holder.rlContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navToPhotoGridActivity(user.userId);
+                startProfileActivity(user);
             }
         });
+    }
+
+    private void startProfileActivity(InstagramUser user) {
+        Intent intent = new Intent(mContext, ProfileActivity.class);
+        intent.putExtra(ProfileActivity.EXTRA_USER_OBJECT, user);
+        mContext.startActivity(intent);
     }
 
     private void configureTagView(SearchTagsItemViewHolder holder, final InstagramSearchTag tag) {

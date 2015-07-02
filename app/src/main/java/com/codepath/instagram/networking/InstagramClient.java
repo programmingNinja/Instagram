@@ -18,14 +18,18 @@ public class InstagramClient extends OAuthBaseClient {
     public static final String REST_CONSUMER_KEY = Constants.CLIENT_ID;
     public static final String REST_CONSUMER_SECRET = Constants.CLIENT_SHARED_SECRET;
     public static final String REST_CALLBACK_URL = Constants.CLIENT_REDIRECT_URL;
+    private static final String KEY_CLIENT_ID = "client_id";
+    private static final String KEY_ACCESS_TOKEN = "access_token";
     private static final String ENDPOINT_POPULAR_FEED =  "media/popular";
     private static final String ENDPOINT_SELF_FEED =  "users/self/feed";
     private static final String ENDPOINT_SEARCH_TAGS =  "tags/search";
     private static final String ENDPOINT_SEARCH_USERS =  "users/search";
     private static final String ENDPOINT_POST_COMMENT = "media/%s/comments";
-    private static final String ENDPOINT_USER_INFO = "users/self";
-    private static final String KEY_CLIENT_ID = "client_id";
-    private static final String KEY_ACCESS_TOKEN = "access_token";
+    private static final String ENDPOINT_USER_INFO = "users/%s";
+    private static final String ENDPOINT_TAGS_RECENT_MEDIA = "tags/%s/media/recent";
+    private static final String ENDPOINT_USERS_RECENT_MEDIA = "users/%s/media/recent";
+    private static final String ENDPOINT_POST_LIKE = "media/media-id/likes";
+    private static final String ENDPOINT_SELF_USER_LIKED_MEDIA = "users/self/media/liked";
     private SyncHttpClient syncHttpClient = new SyncHttpClient();
 
     public InstagramClient(Context context) {
@@ -45,7 +49,7 @@ public class InstagramClient extends OAuthBaseClient {
     }
 
     public void getPostComments(String mediaId, AsyncHttpResponseHandler responseHandler) {
-        String relativeUrl = String.format("media/%s/comments", mediaId);
+        String relativeUrl = String.format(ENDPOINT_POST_COMMENT, mediaId);
         client.get(getAbsoluteUrl(relativeUrl), getDefaultRequestParams(), responseHandler);
     }
 
@@ -59,17 +63,27 @@ public class InstagramClient extends OAuthBaseClient {
     }
 
     public void getTagRecentMedia(String tag, AsyncHttpResponseHandler responseHandler) {
-        String relativeUrl = String.format("tags/%s/media/recent", tag);
+        String relativeUrl = String.format(ENDPOINT_TAGS_RECENT_MEDIA, tag);
         client.get(getAbsoluteUrl(relativeUrl), responseHandler);
     }
 
     public void getUserRecentMedia(String userId, AsyncHttpResponseHandler responseHandler) {
-        String relativeUrl = String.format("users/%s/media/recent", userId);
+        String relativeUrl = String.format(ENDPOINT_USERS_RECENT_MEDIA, userId);
         client.get(getAbsoluteUrl(relativeUrl), responseHandler);
     }
 
+    public void getUserSelfLikedMedia(AsyncHttpResponseHandler responseHandler) {
+        client.get(getAbsoluteUrl(ENDPOINT_SELF_USER_LIKED_MEDIA), responseHandler);
+    }
+
     public void getUserInfo(JsonHttpResponseHandler responseHandler) {
-        syncHttpClient.get(getAbsoluteUrl(ENDPOINT_USER_INFO),  getAccessTokenParams(), responseHandler);
+        String relativeUrl = String.format(ENDPOINT_USER_INFO, "self");
+        syncHttpClient.get(getAbsoluteUrl(relativeUrl),  getAccessTokenParams(), responseHandler);
+    }
+
+    public void getUserProfile(String userId, JsonHttpResponseHandler responseHandler) {
+        String relativeUrl = String.format(ENDPOINT_USER_INFO, userId);
+        client.get(getAbsoluteUrl(relativeUrl), responseHandler);
     }
 
     public void getUserFeedSynchronously(AsyncHttpResponseHandler responseHandler) {
@@ -84,5 +98,10 @@ public class InstagramClient extends OAuthBaseClient {
         String relativeUrl = String.format(ENDPOINT_POST_COMMENT, postMediaId);
         RequestParams params = new RequestParams("text", commentText);
         client.post(getAbsoluteUrl(relativeUrl), params, responseHandler);
+    }
+
+    public void postLikeMedia(String mediaId, JsonHttpResponseHandler responseHandler) {
+        String relativeUrl = String.format(ENDPOINT_POST_LIKE, mediaId);
+        client.post(getAbsoluteUrl(relativeUrl), responseHandler);
     }
 }

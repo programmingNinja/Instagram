@@ -8,6 +8,7 @@ import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.*;
 import com.codepath.instagram.R;
+import com.codepath.instagram.activities.HomeActivity;
 import com.codepath.instagram.adapters.SearchFragmentStatePagerAdapter;
 
 public class SearchFragment extends BaseFragment {
@@ -31,6 +32,7 @@ public class SearchFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
         initUi(view);
@@ -54,6 +56,8 @@ public class SearchFragment extends BaseFragment {
         getActivity().getMenuInflater().inflate(R.menu.menu_search, menu);
         final MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchItem.expandActionView();
+        searchView.setIconified(false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -69,9 +73,19 @@ public class SearchFragment extends BaseFragment {
                 return false;
             }
         });
+
+        updateActionBarTitle(getString(R.string.str_search));
+
+    }
+
+    private void updateActionBarTitle(String title) {
+        if (((HomeActivity) getActivity()).getSupportActionBar() != null) {
+            ((HomeActivity) getActivity()).setActionBarTitle(title);
+        }
     }
 
     private void handleSearchResult(MenuItem searchItem, SearchView searchView, String query) {
+        updateActionBarTitle(query);
         searchView.clearFocus();
         searchView.setQuery("", false);
         searchView.setIconified(true);

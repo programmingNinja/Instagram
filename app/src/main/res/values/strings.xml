@@ -37,4 +37,14 @@
     <string name="bt_send">Send</string>
     <string name="hint_add_comment">Add a Comment</string>
     <string name="cd_submit">Submit</string>
+    <string name="str_comments">COMMENTS</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="label_posts">posts</string>
+    <string name="hint_postcount">4141</string>
+    <string name="label_follower">followers</string>
+    <string name="label_following">following</string>
+    <string name="noposts">No Posts Found</string>
+    <string name="str_search">Search</string>
+    <string name="user_private">This user is private.</string>
+    <string name="posts_you_liked">Posts you\'ve Liked</string>
 </resources>

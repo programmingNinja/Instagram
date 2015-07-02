@@ -9,10 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InstagramUser implements Serializable {
+
     public String userName;
     public String fullName;
     public String profilePictureUrl;
     public String userId;
+    public String bio;
+    public InstagramCounts counts;
 
     public static InstagramUser fromJson(JSONObject jsonObject) {
         if (jsonObject == null) {
@@ -25,7 +28,12 @@ public class InstagramUser implements Serializable {
             user.userId = jsonObject.getString("id");
             user.userName = jsonObject.getString("username");
             user.fullName = jsonObject.optString("full_name", "");
+            user.bio = jsonObject.optString("bio", "");
             user.profilePictureUrl = jsonObject.getString("profile_picture");
+            JSONObject countsJson = jsonObject.optJSONObject("counts");
+            if (countsJson != null) {
+                user.counts = InstagramCounts.fromJson(countsJson);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             return null;

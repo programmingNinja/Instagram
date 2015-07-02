@@ -1,0 +1,184 @@
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <RelativeLayout
+                android:id="@+id/rlNoResult"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+                <TextView
+                        android:id="@+id/tvComment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="@string/user_private"
+                        android:textColor="@color/gray_text"
+                        android:fontFamily="sans-serif"
+                        android:layout_marginTop="4dp"
+                        android:lineSpacingMultiplier="1.2"
+                        android:textSize="32sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+                android:id="@+id/rlProfileContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+
+                <RelativeLayout
+                        android:id="@+id/rlProfileInfo"
+                        android:padding="8dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.facebook.drawee.view.SimpleDraweeView
+                                android:id="@+id/sdvProfileImage"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:padding="5dp"
+                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
+                                app:actualImageScaleType="fitCenter"
+                                app:placeholderImage="@drawable/gray_oval"
+                                app:viewAspectRatio="1"
+                                app:roundAsCircle="true" />
+
+                        <LinearLayout
+                                android:id="@+id/llCounts"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@+id/sdvProfileImage"
+                                android:layout_toEndOf="@id/sdvProfileImage"
+                                android:layout_marginBottom="3dp"
+                                android:layout_marginTop="3dp"
+                                android:orientation="horizontal" >
+
+                                <RelativeLayout
+                                        android:id="@+id/rlPostCount"
+                                        android:layout_width="0px"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:gravity="center"
+                                        android:layout_margin="5dp"
+                                        android:layout_weight="1" >
+
+                                        <TextView
+                                                android:id="@+id/tvPostCount"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_centerHorizontal="true"
+                                                android:gravity="center"
+                                                android:hint="@string/hint_postcount"
+                                                android:textSize="24sp"
+                                                android:textStyle="bold" />
+
+                                        <TextView
+                                                android:id="@+id/tvPostLabel"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_centerHorizontal="true"
+                                                android:gravity="center"
+                                                android:layout_below="@+id/tvPostCount"
+                                                android:text="@string/label_posts"
+                                                android:textSize="12sp" />
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                        android:id="@+id/rlFollower"
+                                        android:layout_width="0px"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="5dp"
+                                        android:layout_weight="1" >
+
+                                        <TextView
+                                                android:id="@+id/tvProfileFollowerCount"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_centerHorizontal="true"
+                                                android:gravity="center"
+                                                android:hint="@string/hint_postcount"
+                                                android:textSize="24sp"
+                                                android:textStyle="bold" />
+
+                                        <TextView
+                                                android:id="@+id/tvProfileFollowerLabel"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_below="@+id/tvProfileFollowerCount"
+                                                android:layout_centerHorizontal="true"
+                                                android:gravity="center"
+                                                android:text="@string/label_follower"
+                                                android:textSize="12sp" />
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                        android:id="@+id/rlProfileFollowing"
+                                        android:layout_width="0px"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="5dp"
+                                        android:layout_weight="1" >
+
+                                        <TextView
+                                                android:id="@+id/tvProfileFollowingCount"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_centerHorizontal="true"
+                                                android:gravity="center"
+                                                android:hint="@string/hint_postcount"
+                                                android:textSize="24sp"
+                                                android:textStyle="bold" />
+
+                                        <TextView
+                                                android:id="@+id/tvProfileFollowingLabel"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_below="@+id/tvProfileFollowingCount"
+                                                android:layout_centerHorizontal="true"
+                                                android:gravity="center"
+                                                android:text="@string/label_following"
+                                                android:textSize="12sp" />
+                                </RelativeLayout>
+                        </LinearLayout>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                        android:id="@+id/rlNameBioContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:orientation="vertical"
+                        android:layout_below="@id/rlProfileInfo">
+
+                        <TextView
+                                android:id="@+id/tvUserFullName"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/gray_text"
+                                android:textStyle="bold"
+                                android:fontFamily="sans-serif"
+                                android:layout_marginTop="4dp"
+                                android:lineSpacingMultiplier="1.2"
+                                android:textSize="14sp" />
+
+                        <TextView
+                                android:id="@+id/tvUserBio"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/light_gray_text"
+                                android:layout_marginTop="10dp"
+                                android:fontFamily="sans-serif"
+                                android:textSize="14sp" />
+
+                </LinearLayout>
+
+                <FrameLayout
+                        android:id="@+id/flContainer"
+                        android:layout_below="@+id/rlNameBioContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+        </RelativeLayout>
+</RelativeLayout>

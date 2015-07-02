@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -54,6 +55,16 @@ public class CommentsActivity extends BaseActivity {
             postMediaId = getIntent().getStringExtra(KEY_MEDIA_ID);
         }
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.str_comments));
+            setSupportActionBar(toolbar);
+        }
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         //Get Handle to your UI elements
         initUi();
 
@@ -63,17 +74,21 @@ public class CommentsActivity extends BaseActivity {
 
     private void fetchPostComments() {
         if (Utils.isNetworkAvailable(this.getApplicationContext())) {
+            showProgressBar(true);
             instagramClient.getPostComments(postMediaId, new JsonHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     mCommentsList.addAll(Utils.decodeCommentsFromJsonResponse(response));
                     mInstagramCommentsAdapter.notifyDataSetChanged();
+                    mRecyclerView.scrollToPosition(mCommentsList.size()-1);
+                    showProgressBar(false);
                 }
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                     showErrorMsg();
+                    showProgressBar(false);
                 }
             });
         } else {
@@ -145,6 +160,7 @@ public class CommentsActivity extends BaseActivity {
                         etComment.setText("");
                         mCommentsList.add(comment);
                         mInstagramCommentsAdapter.notifyDataSetChanged();
+                        mRecyclerView.scrollToPosition(mCommentsList.size()-1);
                         showProgressBar(false);
                     }
 
@@ -221,6 +237,16 @@ public class CommentsActivity extends BaseActivity {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // 'home' is the id for the icon click in the action bar (i.e. up/back).
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     public void showProgressBar(boolean show) {
         if (miActionProgressItem != null) {

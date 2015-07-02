@@ -5,8 +5,8 @@
     <color name="gray_text">#4B4F54</color>
     <color name="light_gray_separator_line">#E6E6E6</color>
     <color name="blue_text">#125688</color>
-    <color name="instagram_blue">#00538B</color>
-    <color name="blue_status_bar">#004876</color>
+    <color name="instagram_blue">#125688</color>
+    <color name="blue_status_bar">#0f4973</color>
     <color name="search_tab_bar_background">#EEEEEE</color>
     <color name="placeholder_image">#BBBBBB</color>
 

@@ -3,6 +3,7 @@ package com.codepath.instagram.activities;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.codepath.instagram.R;
@@ -22,6 +23,12 @@ public class HomeActivity extends BaseActivity implements PostsFragment.Progress
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         //Get Handle to your UI elements
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tbHome);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.app_name));
+            setSupportActionBar(toolbar);
+        }
         initUi();
     }
 
@@ -29,7 +36,8 @@ public class HomeActivity extends BaseActivity implements PostsFragment.Progress
         tlTabBar = (TabLayout)findViewById(R.id.tlTabBar);
         nsvpHome = (NonSwipeableViewPager)findViewById(R.id.nsvpHome);
 
-        FragmentStatePagerAdapter fragmentStatePagerAdapter = new HomeFragmentStatePagerAdapter(getSupportFragmentManager(), this);
+        FragmentStatePagerAdapter fragmentStatePagerAdapter = new HomeFragmentStatePagerAdapter(
+                getSupportFragmentManager(), this);
         nsvpHome.setAdapter(fragmentStatePagerAdapter);
         tlTabBar.setupWithViewPager(nsvpHome);
     }
@@ -52,6 +60,12 @@ public class HomeActivity extends BaseActivity implements PostsFragment.Progress
     public void showProgressBar(boolean show) {
         if (miActionProgressItem != null) {
             miActionProgressItem.setVisible(show);
+        }
+    }
+
+    public void setActionBarTitle(String title){
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
         }
     }
 }

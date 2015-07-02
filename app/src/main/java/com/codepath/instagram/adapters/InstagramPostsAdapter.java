@@ -20,10 +20,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.codepath.instagram.R;
 import com.codepath.instagram.activities.CommentsActivity;
+import com.codepath.instagram.activities.ProfileActivity;
+import com.codepath.instagram.core.MainApplication;
 import com.codepath.instagram.helpers.ShareIntent;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramComment;
 import com.codepath.instagram.models.InstagramPost;
+import com.codepath.instagram.models.InstagramUser;
 import com.facebook.common.executors.CallerThreadExecutor;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.DataSource;
@@ -35,12 +38,16 @@ import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import org.apache.http.Header;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAdapter.PostItemViewHolder> {
 
+    private static final String TAG = InstagramPostsAdapter.class.getSimpleName();
     private List<InstagramPost> mSamplePostList;
     private Context mContext;
 
@@ -64,7 +71,7 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
         configureView(postItemViewHolder, instagramPost);
     }
 
-    private void configureView(PostItemViewHolder postItemViewHolder, final InstagramPost instagramPost) {
+    private void configureView(final PostItemViewHolder postItemViewHolder, final InstagramPost instagramPost) {
 
         postItemViewHolder.tvCaption.setText(Utils.formatCaptionText(mContext,
                 instagramPost.user.userName, instagramPost.caption));
@@ -83,6 +90,13 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
         postItemViewHolder.sdvPhoto.setAspectRatio(calculateImageAspectRatio(instagramPost));
         postItemViewHolder.sdvProfileImage.setImageURI(Uri.parse(instagramPost.user.profilePictureUrl));
 
+        postItemViewHolder.sdvProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startProfileActivity(instagramPost.user);
+            }
+        });
+
         // Only show the "View All" if there are more than 2 comments
         boolean shouldShowViewAll = instagramPost.commentsCount > MAX_COMMENTS_TO_SHOW;
 
@@ -99,6 +113,20 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
             }
         });
 
+        postItemViewHolder.ivComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startCommentsActivity(instagramPost);
+            }
+        });
+
+        postItemViewHolder.ivLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doLikePostCall(postItemViewHolder.ivLike, instagramPost);
+            }
+        });
+
         boolean shouldShowComments = instagramPost.commentsCount > 0;
         postItemViewHolder.llComments.setVisibility(shouldShowComments ? View.VISIBLE : View.GONE);
         if (shouldShowComments) {
@@ -111,6 +139,45 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
                 handleShareButtonPress(v, instagramPost);
             }
         });
+    }
+
+    private void doLikePostCall(final ImageView ivLike, InstagramPost instagramPost) {
+        if (Utils.isNetworkAvailable(mContext)) {
+            MainApplication.getRestClient().postLikeMedia(instagramPost.mediaId, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    changeResource(ivLike);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    Log.e(TAG, "Could not like post error - " + statusCode + " - " + errorResponse.toString() );
+                    Utils.showErrorMsg(mContext);
+                    changeResource(ivLike);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String msg, Throwable throwable){
+                    Log.e(TAG, "Could not like post error - " + statusCode + " - " + msg );
+                    Utils.showErrorMsg(mContext);
+                    changeResource(ivLike);
+                }
+            });
+        } else {
+            Utils.showErrorMsg(mContext, mContext.getString(R.string.err_no_internet));
+        }
+    }
+
+    //TODO - Temporarily calling this method even onFailure because the current instagram
+    //TODO-  client does not have permission to post new resources. Need to remove the method calls from onFailure()
+    private void changeResource(ImageView ivLike) {
+        ivLike.setImageResource(R.drawable.ic_heart_liked);
+    }
+
+    private void startProfileActivity(InstagramUser user) {
+        Intent intent = new Intent(mContext, ProfileActivity.class);
+        intent.putExtra(ProfileActivity.EXTRA_USER_OBJECT, user);
+        mContext.startActivity(intent);
     }
 
     private void populateComments(LinearLayout llContainer, List<InstagramComment> comments) {

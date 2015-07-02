@@ -1,49 +1,41 @@
 package com.codepath.instagram.activities;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.codepath.instagram.R;
-import com.codepath.instagram.fragments.PhotoGridFragment;
+import com.codepath.instagram.fragments.UserProfileFragment;
+import com.codepath.instagram.models.InstagramUser;
 
-public class PhotosGridActivity extends BaseActivity implements PhotoGridFragment.ProgressBarTriggerListener {
+public class ProfileActivity extends BaseActivity implements UserProfileFragment.ProgressBarTriggerListener {
 
-    private static final String TAG = "PhotoGridActivity";
+    public static final String EXTRA_USER_OBJECT = "KEY_USER_OBJECT";
+    private InstagramUser mUser;
     private MenuItem miActionProgressItem;
-    public static final String EXTRA_USER_ID = "KEY_USER_ID";
-    public static final String EXTRA_SEARCH_TAG = "KEY_SEARCH_ID";
-
-    private String userId, searchTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_photos_grid);
-
+        setContentView(R.layout.activity_profile);
         if (getIntent() != null) {
-            userId = getIntent().getStringExtra(EXTRA_USER_ID);
-            searchTag = getIntent().getStringExtra(EXTRA_SEARCH_TAG);
+            mUser = (InstagramUser) getIntent().getSerializableExtra(EXTRA_USER_OBJECT);
+        }
 
-            String title = !TextUtils.isEmpty(userId) ? ("@" + userId) : ("#" + searchTag);
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            if (toolbar != null) {
-                toolbar.setTitle(title);
-                setSupportActionBar(toolbar);
-            }
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(mUser.userName);
+            setSupportActionBar(toolbar);
+        }
 
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            }
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
         if (savedInstanceState == null) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.frPhotoGridContainer, PhotoGridFragment.newInstance(userId, searchTag));
-            ft.commit();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, UserProfileFragment.newInstance(mUser))
+                    .commit();
         }
     }
 
@@ -71,7 +63,6 @@ public class PhotosGridActivity extends BaseActivity implements PhotoGridFragmen
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
     public void showProgressBar(boolean show) {
         if (miActionProgressItem != null) {
             miActionProgressItem.setVisible(show);

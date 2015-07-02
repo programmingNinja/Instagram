@@ -4,6 +4,14 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
+    <android.support.v7.widget.Toolbar
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/tbHome"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:minHeight="?attr/actionBarSize"
+            android:background="?attr/colorPrimary" />
+
     <android.support.design.widget.TabLayout
             android:id="@+id/tlTabBar"
             android:background="@android:color/black"
@@ -16,6 +24,7 @@
     <com.codepath.instagram.helpers.NonSwipeableViewPager
             android:id="@+id/nsvpHome"
             android:layout_above="@id/tlTabBar"
+            android:layout_below="@id/tbHome"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 

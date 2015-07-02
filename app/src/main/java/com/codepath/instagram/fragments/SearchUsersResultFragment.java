@@ -54,6 +54,7 @@ public class SearchUsersResultFragment extends BaseSearchFragment {
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     List<InstagramUser> searchUser = Utils.decodeUsersFromJsonResponse(response);
                     mSearchResultsAdapter.replaceAllUsers(searchUser);
+                    handleNoResult();
                 }
 
                 @Override

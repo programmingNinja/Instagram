@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.codepath.instagram.R;
 import com.codepath.instagram.adapters.SearchResultsAdapter;
@@ -20,6 +21,7 @@ public abstract class BaseSearchFragment extends Fragment {
 
     protected InstagramClient instagramClient;
     protected RecyclerView rvSearchResults;
+    protected RelativeLayout rlNoResult;
     protected Context mContext;
     protected SearchResultsAdapter mSearchResultsAdapter;
     protected SearchResultsAdapter.SearchType mSearchType;
@@ -37,6 +39,7 @@ public abstract class BaseSearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search_results, container, false);
         rvSearchResults = (RecyclerView) view.findViewById(R.id.rvSearchResults);
+        rlNoResult = (RelativeLayout) view.findViewById(R.id.rlNoResult);
         configureRecyclerView();
         return view;
     }
@@ -78,5 +81,15 @@ public abstract class BaseSearchFragment extends Fragment {
 
     protected void showErrorMsg(String errorMsg) {
         Toast.makeText(mContext, errorMsg, Toast.LENGTH_SHORT).show();
+    }
+
+    protected void handleNoResult() {
+        if (mSearchResultsAdapter.getItemCount() < 1) {
+            rvSearchResults.setVisibility(View.GONE);
+            rlNoResult.setVisibility(View.VISIBLE);
+        } else {
+            rvSearchResults.setVisibility(View.VISIBLE);
+            rlNoResult.setVisibility(View.GONE);
+        }
     }
 }

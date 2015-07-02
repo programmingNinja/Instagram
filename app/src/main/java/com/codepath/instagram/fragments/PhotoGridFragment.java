@@ -3,9 +3,11 @@ package com.codepath.instagram.fragments;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import com.codepath.instagram.R;
 import com.codepath.instagram.adapters.InstagramPhotosAdapter;
 import com.codepath.instagram.helpers.Utils;
@@ -27,7 +29,8 @@ public class PhotoGridFragment extends BaseFragment {
     private ArrayList<InstagramPost> posts;
     private InstagramPhotosAdapter instagramPhotosAdapter;
 
-    RecyclerView rvPhotoGrid;
+    private RecyclerView rvPhotoGrid;
+    private RelativeLayout rlNoResult;
 
     private String userId;
     private String tag;
@@ -61,6 +64,7 @@ public class PhotoGridFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_photos_grid, container, false);
         rvPhotoGrid = (RecyclerView)view.findViewById(R.id.rvPhotoGrid);
+        rlNoResult = (RelativeLayout) view.findViewById(R.id.rlNoResult);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), NUM_COLUMNS);
         rvPhotoGrid.setLayoutManager(layoutManager);
         rvPhotoGrid.setAdapter(instagramPhotosAdapter);
@@ -75,6 +79,7 @@ public class PhotoGridFragment extends BaseFragment {
                 instagramPhotosAdapter.clear();
                 instagramPhotosAdapter.addAll(Utils.decodePostsFromJsonResponse(response));
                 instagramPhotosAdapter.notifyDataSetChanged();
+                checkIfNoResults();
                 showProgressBar(true);
             }
 
@@ -85,13 +90,23 @@ public class PhotoGridFragment extends BaseFragment {
         };
 
         if (Utils.isNetworkAvailable(mContext)) {
-            if (userId != null) {
+            if (!TextUtils.isEmpty(userId)) {
                 instagramClient.getUserRecentMedia(userId, responseHandler);
-            } else if (tag != null) {
+            } else if (!TextUtils.isEmpty(tag)) {
                 instagramClient.getTagRecentMedia(tag, responseHandler);
             }
         } else {
             showErrorMsg(getString(R.string.err_no_internet));
+        }
+    }
+
+    private void checkIfNoResults() {
+        if (instagramPhotosAdapter.getItemCount() < 1) {
+            rvPhotoGrid.setVisibility(View.GONE);
+            rlNoResult.setVisibility(View.VISIBLE);
+        } else {
+            rvPhotoGrid.setVisibility(View.VISIBLE);
+            rlNoResult.setVisibility(View.GONE);
         }
     }
 }

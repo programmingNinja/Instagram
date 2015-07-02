@@ -54,6 +54,7 @@ public class SearchTagsResultFragment extends BaseSearchFragment {
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     List<InstagramSearchTag> searchTags = Utils.decodeSearchTagsFromJsonResponse(response);
                     mSearchResultsAdapter.replaceAllTags(searchTags);
+                    handleNoResult();
                 }
 
                 @Override

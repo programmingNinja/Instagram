@@ -1,12 +1,6 @@
 package com.codepath.instagram.fragments;
 
-import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,35 +10,29 @@ import android.view.*;
 import com.codepath.instagram.R;
 import com.codepath.instagram.activities.HomeActivity;
 import com.codepath.instagram.adapters.InstagramPostsAdapter;
-import com.codepath.instagram.core.MainApplication;
-import com.codepath.instagram.database.InstagramClientDatabase;
 import com.codepath.instagram.helpers.DividerItemDecoration;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramPost;
-import com.codepath.instagram.models.InstagramPosts;
-import com.codepath.instagram.services.BackgroundFeedService;
-import org.json.JSONException;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import org.apache.http.Header;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostsFragment extends BaseFragment {
+public class SelfLikedPostsFragment extends BaseFragment {
 
-    private static final String TAG = PostsFragment.class.getSimpleName();
+    private static final String TAG = SelfLikedPostsFragment.class.getSimpleName();
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView mRecyclerView;
     private List<InstagramPost> mInstagramPostsList;
     private InstagramPostsAdapter mInstagramPostsAdapter;
-    private InstagramClientDatabase database;
-    private MenuItem miActionProgressItem;
 
-    public static PostsFragment newInstance() {
-        return new PostsFragment();
+    public static SelfLikedPostsFragment newInstance() {
+        return new SelfLikedPostsFragment();
     }
 
-    public PostsFragment() {
+    public SelfLikedPostsFragment() {
         // Required empty public constructor
     }
 
@@ -52,30 +40,15 @@ public class PostsFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        ((HomeActivity) getActivity()).setActionBarTitle(getString(R.string.app_name));
+        ((HomeActivity) getActivity()).setActionBarTitle(getString(R.string.posts_you_liked));
 
-        database = MainApplication.sharedApplication().getDatabase();
         View view = inflater.inflate(R.layout.fragment_posts, container, false);
 
         initUi(view);
 
+        fetchPostsLiked();
+
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        // Register for the particular broadcast based on ACTION string
-        IntentFilter filter = new IntentFilter(BackgroundFeedService.ACTION_FETCH_NEW_POSTS);
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(postsLocalBroadcastRcvr, filter);
-        fetchUserFeed();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        // Unregister the listener when the application is paused
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(postsLocalBroadcastRcvr);
     }
 
     private void initUi(View v) {
@@ -86,7 +59,7 @@ public class PostsFragment extends BaseFragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                fetchUserFeed();
+                fetchPostsLiked();
             }
         });
 
@@ -135,18 +108,32 @@ public class PostsFragment extends BaseFragment {
         mRecyclerView.setAdapter(mInstagramPostsAdapter);
     }
 
-    private void fetchUserFeed() {
+    private void fetchPostsLiked() {
         if (Utils.isNetworkAvailable(mContext)) {
             showProgressBar(true);
-            startPostService();
+            fetchSelfLikedPosts();
         } else {
             showErrorMsg(getString(R.string.err_no_internet));
-            handlePostsReceived(database.getAllInstagramPosts());
         }
     }
 
-    private void startPostService() {
-        BackgroundFeedService.startActionFetchNewPosts(getActivity());
+    private void fetchSelfLikedPosts() {
+        if (Utils.isNetworkAvailable(getActivity())) {
+            instagramClient.getUserSelfLikedMedia(new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    super.onSuccess(statusCode, headers, response);
+                    List<InstagramPost> posts = Utils.decodePostsFromJsonResponse(response);
+                    handlePostsReceived(posts);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorJson) {
+                    Log.e(TAG, "Error retrieving user feed " + statusCode + " - " + errorJson.toString());
+                    handleErrorResult();
+                }
+            });
+        }
     }
 
     private void handleErrorResult() {
@@ -154,30 +141,11 @@ public class PostsFragment extends BaseFragment {
         swipeRefreshLayout.setRefreshing(false);
     }
 
-    private BroadcastReceiver postsLocalBroadcastRcvr = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent != null) {
-                int resultCode = intent.getIntExtra(BackgroundFeedService.EXTRA_RESULT_CODE, Activity.RESULT_CANCELED);
-                showProgressBar(false);
-                if (resultCode == Activity.RESULT_OK) {
-                    InstagramPosts postsWrapper = (InstagramPosts) intent.getSerializableExtra(BackgroundFeedService.EXTRA_RESULT_POSTS);
-                    if (postsWrapper.posts != null && postsWrapper.posts.size() > 0) {
-                        handlePostsReceived(postsWrapper.posts);
-                    }
-                } else {
-                    handleErrorResult();
-                }
-            }
-        }
-    };
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getActivity().getMenuInflater().inflate(R.menu.menu_home, menu);
-        miActionProgressItem = menu.findItem(R.id.miActionProgress);
-        ((HomeActivity) getActivity()).setActionBarTitle(getString(R.string.app_name));
+        ((HomeActivity) getActivity()).setActionBarTitle(getString(R.string.posts_you_liked));
     }
 
     private void handlePostsReceived(List<InstagramPost> posts) {
@@ -186,37 +154,5 @@ public class PostsFragment extends BaseFragment {
         mInstagramPostsAdapter.notifyDataSetChanged();
         swipeRefreshLayout.setRefreshing(false);
         showProgressBar(false);
-    }
-
-    public static final String SAMPLE_JSON_FILE_NAME = "popular.json";
-
-    private void loadSampleJsonObject() {
-
-        JSONObject jsonObject = null;
-
-        try {
-            jsonObject = Utils.loadJsonFromAsset(mContext, SAMPLE_JSON_FILE_NAME);
-            Log.d(TAG, jsonObject.toString());
-        } catch (IOException | JSONException e) {
-            Log.e(TAG, "Error loading sample file - " + e.getMessage());
-            e.printStackTrace();
-        }
-
-        if (jsonObject != null) {
-            decodeJsonToModel(jsonObject);
-        }
-    }
-
-    @Override
-    public void showProgressBar(boolean show) {
-        if (miActionProgressItem != null) {
-            miActionProgressItem.setVisible(show);
-        }
-    }
-
-
-    private void decodeJsonToModel(JSONObject jsonObject) {
-        mInstagramPostsList = Utils.decodePostsFromJsonResponse(jsonObject);
-        Log.d(TAG, "Loaded " + mInstagramPostsList.size() + " sample posts.");
     }
 }

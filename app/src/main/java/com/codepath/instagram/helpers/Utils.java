@@ -9,6 +9,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.TypefaceSpan;
+import android.widget.Toast;
 import com.codepath.instagram.R;
 import com.codepath.instagram.models.InstagramComment;
 import com.codepath.instagram.models.InstagramPost;
@@ -116,5 +117,13 @@ public class Utils {
         ConnectivityManager connectivityManager = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    }
+
+    public static void showErrorMsg(Context ctx) {
+        showErrorMsg(ctx, ctx.getString(R.string.err_cannotload));
+    }
+
+    public static void showErrorMsg(Context ctx, String errorMsg) {
+        Toast.makeText(ctx, errorMsg, Toast.LENGTH_SHORT).show();
     }
 }
