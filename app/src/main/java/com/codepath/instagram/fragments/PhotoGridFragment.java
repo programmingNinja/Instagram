@@ -29,7 +29,6 @@ public class PhotoGridFragment extends Fragment {
   private static final String ARG_USER_ID = "userId";
   private static final String ARG_TAG = "tag";
 
-  private ArrayList<InstagramPost> posts;
   private InstagramPhotosAdapter instagramPhotosAdapter;
 
   RecyclerView rvPhotoGrid;
@@ -57,7 +56,7 @@ public class PhotoGridFragment extends Fragment {
       userId = getArguments().getString(ARG_USER_ID);
       tag = getArguments().getString(ARG_TAG);
     }
-    posts = new ArrayList<>();
+    ArrayList<InstagramPost> posts = new ArrayList<>();
     instagramPhotosAdapter = new InstagramPhotosAdapter(posts);
   }
 

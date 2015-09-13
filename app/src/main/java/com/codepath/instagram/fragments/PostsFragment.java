@@ -34,7 +34,6 @@ import java.util.List;
 public class PostsFragment extends Fragment {
     private static final String TAG = "PostsFragment";
 
-    private List<InstagramPost> posts;
     private InstagramPostsAdapter instagramPostsAdapter;
     InstagramClientDatabase database;
 
@@ -55,7 +54,7 @@ public class PostsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        posts = new ArrayList<>();
+        List<InstagramPost> posts = new ArrayList<>();
         instagramPostsAdapter = new InstagramPostsAdapter(posts);
         database = InstagramClientDatabase.getInstance(MainApplication.sharedApplication());
     }
@@ -149,8 +148,8 @@ public class PostsFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-        public void showProgressBar();
-        public void hideProgressBar();
+        void showProgressBar();
+        void hideProgressBar();
     }
 
     @Override

@@ -27,11 +27,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
         android:maxLines="1"
-        android:text="UserName"
         android:textColor="@color/blue_text"
         android:textSize="14sp" />
 
@@ -45,7 +45,6 @@
         android:fontFamily="sans-serif"
         android:gravity="end"
         android:maxLines="1"
-        android:text="10m"
         android:textColor="@color/light_gray_text"
         android:textSize="14sp" />
 
@@ -80,9 +79,11 @@
           android:id="@+id/btnLike"
           android:layout_width="22dp"
           android:layout_height="22dp"
+          android:layout_alignParentStart="true"
           android:layout_alignParentLeft="true"
           android:layout_centerVertical="true"
           android:background="@android:color/transparent"
+          android:contentDescription="@string/like_button_content_description"
           android:scaleType="fitXY"
           android:src="@drawable/ic_heart" />
 
@@ -91,9 +92,12 @@
           android:layout_width="22dp"
           android:layout_height="22dp"
           android:layout_centerVertical="true"
+          android:layout_marginStart="20dp"
           android:layout_marginLeft="20dp"
           android:layout_toRightOf="@id/btnLike"
+          android:layout_toEndOf="@id/btnLike"
           android:background="@android:color/transparent"
+          android:contentDescription="@string/comment_button_content_description"
           android:scaleType="fitXY"
           android:src="@drawable/ic_comment" />
 
@@ -101,9 +105,11 @@
           android:id="@+id/btnShare"
           android:layout_width="8dp"
           android:layout_height="22dp"
+          android:layout_alignParentEnd="true"
           android:layout_alignParentRight="true"
           android:layout_centerVertical="true"
           android:background="@android:color/transparent"
+          android:contentDescription="@string/share_button_content_description"
           android:scaleType="fitXY"
           android:src="@drawable/ic_more_dots" />
     </RelativeLayout>
@@ -118,12 +124,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:drawableStart="@drawable/ic_small_heart_filled"
         android:drawableLeft="@drawable/ic_small_heart_filled"
         android:drawablePadding="5dp"
         android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
         android:maxLines="1"
-        android:text="12 likes"
         android:textColor="@color/blue_text"
         android:textSize="14sp" />
 
@@ -136,7 +142,6 @@
         android:fontFamily="sans-serif"
         android:lineSpacingMultiplier="1.2"
         android:maxLines="3"
-        android:text="Test"
         android:textColor="@color/gray_text"
         android:textSize="14sp" />
 
@@ -147,7 +152,6 @@
         android:background="@android:color/transparent"
         android:fontFamily="sans-serif"
         android:maxLines="1"
-        android:text="View all 4 comments"
         android:textAllCaps="false"
         android:textColor="@color/light_gray_text"
         android:textSize="14sp" />

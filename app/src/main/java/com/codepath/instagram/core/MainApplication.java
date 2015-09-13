@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.codepath.instagram.models.InstagramUser;
 import com.codepath.instagram.networking.InstagramClient;
-import com.codepath.instagram.persistence.InstagramClientDatabase;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 public class MainApplication extends Application {

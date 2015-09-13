@@ -29,7 +29,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lineSpacingMultiplier="1.2"
-        android:text="This is a good comment"
         android:textColor="@color/gray_text"
         android:textSize="14sp" />
 
@@ -40,7 +39,6 @@
         android:ellipsize="end"
         android:lineSpacingMultiplier="1.2"
         android:maxLines="1"
-        android:text="10m"
         android:textColor="@color/light_gray_text"
         android:textSize="14sp" />
 

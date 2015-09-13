@@ -16,15 +16,12 @@ public class PhotoGridActivity extends AppCompatActivity {
   public static final String EXTRA_USER_ID = "userId";
   public static final String EXTRA_SEARCH_TAG = "searchTag";
 
-  private String userId;
-  private String searchTag;
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_photo_grid);
-    userId = getIntent().getStringExtra(EXTRA_USER_ID);
-    searchTag = getIntent().getStringExtra(EXTRA_SEARCH_TAG);
+    String userId = getIntent().getStringExtra(EXTRA_USER_ID);
+    String searchTag = getIntent().getStringExtra(EXTRA_SEARCH_TAG);
     if (savedInstanceState == null) {
       FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
       ft.replace(R.id.frPhotoGridContainer, PhotoGridFragment.newInstance(userId, searchTag));
