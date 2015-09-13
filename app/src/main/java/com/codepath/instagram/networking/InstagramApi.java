@@ -12,7 +12,7 @@ public class InstagramApi extends DefaultApi20 {
 
   private static final String URL =
           "https://api.instagram.com/oauth/authorize/?client_id"
-                  + "=%s&redirect_uri=%s&response_type=code";
+                  + "=%s&redirect_uri=%s&response_type=code&scope=%s";
 
   @Override
   public Verb getAccessTokenVerb() {
@@ -26,7 +26,11 @@ public class InstagramApi extends DefaultApi20 {
 
   @Override
   public String getAuthorizationUrl(OAuthConfig config) {
-    return String.format(URL, config.getApiKey(), OAuthEncoder.encode(config.getCallback()));
+    return String.format(
+            URL,
+            config.getApiKey(),
+            OAuthEncoder.encode(config.getCallback()),
+            config.getScope());
   }
 
   @Override
