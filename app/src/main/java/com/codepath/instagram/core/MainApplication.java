@@ -11,7 +11,6 @@ public class MainApplication extends Application {
     private static final String TAG = "MainApplication";
     private static MainApplication instance;
 
-    private InstagramClientDatabase database;
     private InstagramUser currentUser;
 
     public static MainApplication sharedApplication() {
@@ -24,15 +23,10 @@ public class MainApplication extends Application {
         instance = this;
         super.onCreate();
         Fresco.initialize(this);
-        database = new InstagramClientDatabase(this);
     }
 
     public static InstagramClient getRestClient() {
         return (InstagramClient) InstagramClient.getInstance(InstagramClient.class, sharedApplication());
-    }
-
-    public InstagramClientDatabase getDatabase() {
-        return database;
     }
 
     public InstagramUser getCurrentUser() {

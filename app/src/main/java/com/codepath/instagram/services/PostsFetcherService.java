@@ -25,11 +25,11 @@ public class PostsFetcherService extends IntentService {
     public static final String EXTRA_RESULT_POSTS = "posts";
 
     public static final String ACTION = "com.codepath.instagram.services.PostsFetcherService";
-    InstagramClientDatabase database;
+    private InstagramClientDatabase database;
 
     public PostsFetcherService() {
         super("PostsFetcherService");
-        database = MainApplication.sharedApplication().getDatabase();
+        database = InstagramClientDatabase.getInstance(this);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class PostsFetcherService extends IntentService {
                 InstagramPosts postsWrapper = new InstagramPosts();
                 postsWrapper.posts = posts;
 
-                database.clearDatabase();
+                database.emptyAllTables();
                 database.addInstagramPosts(posts);
 
                 resultIntent.putExtra(EXTRA_RESULT_CODE, Activity.RESULT_OK);

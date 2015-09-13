@@ -57,7 +57,7 @@ public class PostsFragment extends Fragment {
         setHasOptionsMenu(true);
         posts = new ArrayList<>();
         instagramPostsAdapter = new InstagramPostsAdapter(posts);
-        database = MainApplication.sharedApplication().getDatabase();
+        database = InstagramClientDatabase.getInstance(MainApplication.sharedApplication());
     }
 
     @Override
