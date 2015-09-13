@@ -5,38 +5,38 @@
     android:orientation="vertical"
     tools:context="com.codepath.instagram.activities.CommentsActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvInstagramComments"
-        android:paddingTop="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+  <android.support.v7.widget.RecyclerView
+      android:id="@+id/rvInstagramComments"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:paddingTop="16dp"
+      tools:listitem="@layout/item_comment" />
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="50dp"
+      android:layout_marginLeft="16dp"
+      android:orientation="horizontal">
+
+    <EditText
+        android:id="@+id/etComment"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        tools:listitem="@layout/item_comment"/>
+        android:hint="Add a comment"
+        android:inputType="text"
+        android:textColor="@color/gray_text"
+        android:textColorHint="@color/light_gray_text"
+        android:textSize="14sp" />
 
-    <LinearLayout
-        android:layout_marginLeft="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal" >
+    <Button
+        android:id="@+id/btnSubmitComment"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:onClick="submitComment"
+        android:text="Send" />
 
-        <EditText
-            android:id="@+id/etComment"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:textSize="14sp"
-            android:textColor="@color/gray_text"
-            android:hint="Add a comment"
-            android:textColorHint="@color/light_gray_text"
-            android:inputType="text"/>
-
-        <Button
-            android:id="@+id/btnSubmitComment"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:onClick="submitComment"
-            android:text="Send"/>
-
-    </LinearLayout>
+  </LinearLayout>
 
 </LinearLayout>

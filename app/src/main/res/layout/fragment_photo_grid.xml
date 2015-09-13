@@ -4,10 +4,10 @@
     android:layout_height="match_parent"
     tools:context="com.codepath.instagram.fragments.PhotoGridFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvPhotoGrid"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/item_photo" />
+  <android.support.v7.widget.RecyclerView
+      android:id="@+id/rvPhotoGrid"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      tools:listitem="@layout/item_photo" />
 
 </FrameLayout>

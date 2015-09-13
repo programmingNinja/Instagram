@@ -10,41 +10,41 @@ import com.codepath.instagram.fragments.SearchUsersResultFragment;
 import com.codepath.instagram.helpers.SmartFragmentStatePagerAdapter;
 
 public class SearchFragmentStatePagerAdapter extends SmartFragmentStatePagerAdapter {
-    private static final int NUM_PAGES = 2;
+  private static final int NUM_PAGES = 2;
 
-    private Context context;
+  private Context context;
 
-    public SearchFragmentStatePagerAdapter(FragmentManager fragmentManager, Context context) {
-        super(fragmentManager);
-        this.context = context;
+  public SearchFragmentStatePagerAdapter(FragmentManager fragmentManager, Context context) {
+    super(fragmentManager);
+    this.context = context;
+  }
+
+  @Override
+  public int getCount() {
+    return NUM_PAGES;
+  }
+
+  @Override
+  public Fragment getItem(int position) {
+    switch (position) {
+      case 0:
+        return SearchUsersResultFragment.newInstance();
+      case 1:
+        return SearchTagsResultFragment.newInstance();
+      default:
+        return null;
     }
+  }
 
-    @Override
-    public int getCount() {
-        return NUM_PAGES;
+  @Override
+  public CharSequence getPageTitle(int position) {
+    switch (position) {
+      case 0:
+        return context.getString(R.string.search_users);
+      case 1:
+        return context.getString(R.string.search_tags);
+      default:
+        return "";
     }
-
-    @Override
-    public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-                return SearchUsersResultFragment.newInstance();
-            case 1:
-                return SearchTagsResultFragment.newInstance();
-            default:
-                return null;
-        }
-    }
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        switch (position) {
-            case 0:
-                return context.getString(R.string.search_users);
-            case 1:
-                return context.getString(R.string.search_tags);
-            default:
-                return "";
-        }
-    }
+  }
 }

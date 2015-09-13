@@ -4,16 +4,16 @@
     android:layout_height="match_parent"
     tools:context="com.codepath.instagram.fragments.PostsFragment">
 
-    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/swpContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+  <android.support.v4.widget.SwipeRefreshLayout
+      android:id="@+id/swpContainer"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvInstagramPosts"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/item_post" />
-    </android.support.v4.widget.SwipeRefreshLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvInstagramPosts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/item_post" />
+  </android.support.v4.widget.SwipeRefreshLayout>
 
 </FrameLayout>

@@ -11,84 +11,86 @@ import com.loopj.android.http.SyncHttpClient;
 import org.scribe.builder.api.Api;
 
 public class InstagramClient extends OAuthBaseClient {
-    private static final String REST_URL = "https://api.instagram.com/v1/";
-    //private static final String CLIENT_ID = "e05c462ebd86446ea48a5af73769b602";
+  private static final String REST_URL = "https://api.instagram.com/v1/";
 
-    public static final Class<? extends Api> REST_API_CLASS = InstagramApi.class;
-    public static final String REST_CONSUMER_KEY = "e05c462ebd86446ea48a5af73769b602";
-    public static final String REST_CONSUMER_SECRET = "7f18a14de6c241c2a9ccc9f4a3df4b35";
-    public static final String REDIRECT_URI = "oauth://codepath.com";
+  public static final Class<? extends Api> REST_API_CLASS = InstagramApi.class;
+  public static final String REST_CONSUMER_KEY = "e05c462ebd86446ea48a5af73769b602";
+  public static final String REST_CONSUMER_SECRET = "7f18a14de6c241c2a9ccc9f4a3df4b35";
+  public static final String REDIRECT_URI = "oauth://codepath.com";
 
-    public static InstagramClient instagramClient;
+  public static InstagramClient instagramClient;
 
-    public InstagramClient(Context context) {
-        super(context, REST_API_CLASS, REST_URL,
-                REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REDIRECT_URI);
-    }
+  public InstagramClient(Context context) {
+    super(context, REST_API_CLASS, REST_URL,
+            REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REDIRECT_URI);
+  }
 
-    public void getPopularPosts(AsyncHttpResponseHandler responseHandler) {
-        client.get(getAbsoluteUrl("media/popular"), getDefaultRequestParams(), responseHandler);
-    }
+  public void getPopularPosts(AsyncHttpResponseHandler responseHandler) {
+    client.get(getAbsoluteUrl("media/popular"), getDefaultRequestParams(), responseHandler);
+  }
 
-    public void getPostComments(String mediaId, AsyncHttpResponseHandler responseHandler) {
-        String relativeUrl = String.format("media/%s/comments", mediaId);
-        client.get(getAbsoluteUrl(relativeUrl), getDefaultRequestParams(), responseHandler);
-    }
+  public void getPostComments(String mediaId, AsyncHttpResponseHandler responseHandler) {
+    String relativeUrl = String.format("media/%s/comments", mediaId);
+    client.get(getAbsoluteUrl(relativeUrl), getDefaultRequestParams(), responseHandler);
+  }
 
-    public void getUserFeed(AsyncHttpResponseHandler responseHandler) {
-        String relativeUrl = "users/self/feed";
-        client.get(getAbsoluteUrl(relativeUrl), responseHandler);
-    }
+  public void getUserFeed(AsyncHttpResponseHandler responseHandler) {
+    String relativeUrl = "users/self/feed";
+    client.get(getAbsoluteUrl(relativeUrl), responseHandler);
+  }
 
-    public void getUserInfo(AsyncHttpResponseHandler responseHandler) {
-        String relativeUrl = "users/self";
-        client.get(getAbsoluteUrl(relativeUrl), responseHandler);
-    }
+  public void getUserInfo(AsyncHttpResponseHandler responseHandler) {
+    String relativeUrl = "users/self";
+    client.get(getAbsoluteUrl(relativeUrl), responseHandler);
+  }
 
-    public void getUserSearch(String searchTerm, AsyncHttpResponseHandler responseHandler) {
-        String relativeUrl = "users/search";
-        RequestParams params = getDefaultRequestParams();
-        params.put("q", searchTerm);
-        client.get(getAbsoluteUrl(relativeUrl), params, responseHandler);
-    }
+  public void getUserSearch(String searchTerm, AsyncHttpResponseHandler responseHandler) {
+    String relativeUrl = "users/search";
+    RequestParams params = getDefaultRequestParams();
+    params.put("q", searchTerm);
+    client.get(getAbsoluteUrl(relativeUrl), params, responseHandler);
+  }
 
-    public void getTagSearch(String searchTerm, AsyncHttpResponseHandler responseHandler) {
-        String relativeUrl = "tags/search";
-        RequestParams params = getDefaultRequestParams();
-        params.put("q", searchTerm);
-        client.get(getAbsoluteUrl(relativeUrl), params, responseHandler);
-    }
+  public void getTagSearch(String searchTerm, AsyncHttpResponseHandler responseHandler) {
+    String relativeUrl = "tags/search";
+    RequestParams params = getDefaultRequestParams();
+    params.put("q", searchTerm);
+    client.get(getAbsoluteUrl(relativeUrl), params, responseHandler);
+  }
 
-    public void getTagRecentMedia(String tag, AsyncHttpResponseHandler responseHandler) {
-        String relativeUrl = String.format("tags/%s/media/recent", tag);
-        client.get(getAbsoluteUrl(relativeUrl), responseHandler);
-    }
+  public void getTagRecentMedia(String tag, AsyncHttpResponseHandler responseHandler) {
+    String relativeUrl = String.format("tags/%s/media/recent", tag);
+    client.get(getAbsoluteUrl(relativeUrl), responseHandler);
+  }
 
-    public void getUserRecentMedia(String userId, AsyncHttpResponseHandler responseHandler) {
-        String relativeUrl = String.format("users/%s/media/recent", userId);
-        client.get(getAbsoluteUrl(relativeUrl), responseHandler);
-    }
+  public void getUserRecentMedia(String userId, AsyncHttpResponseHandler responseHandler) {
+    String relativeUrl = String.format("users/%s/media/recent", userId);
+    client.get(getAbsoluteUrl(relativeUrl), responseHandler);
+  }
 
-    public void postPostComment(String mediaId, String comment, AsyncHttpResponseHandler responseHandler) {
-        String relativeUrl = String.format("media/%s/comments", mediaId);
-        RequestParams params = new RequestParams("text", comment);
-        client.post(getAbsoluteUrl(relativeUrl), params, responseHandler);
-    }
+  public void postPostComment(
+          String mediaId,
+          String comment,
+          AsyncHttpResponseHandler responseHandler) {
+    String relativeUrl = String.format("media/%s/comments", mediaId);
+    RequestParams params = new RequestParams("text", comment);
+    client.post(getAbsoluteUrl(relativeUrl), params, responseHandler);
+  }
 
-    private static String getAbsoluteUrl(String relativeUrl) {
-        return REST_URL + relativeUrl;
-    }
+  private static String getAbsoluteUrl(String relativeUrl) {
+    return REST_URL + relativeUrl;
+  }
 
-    private static RequestParams getDefaultRequestParams() {
-        RequestParams params = new RequestParams();
-        params.put("client_id", REST_CONSUMER_KEY);
-        return params;
-    }
+  private static RequestParams getDefaultRequestParams() {
+    RequestParams params = new RequestParams();
+    params.put("client_id", REST_CONSUMER_KEY);
+    return params;
+  }
 
-    public void getUserFeedSynchronously(AsyncHttpResponseHandler responseHandler) {
-        String relativeUrl = "users/self/feed";
-        RequestParams params = new RequestParams("access_token", client.getAccessToken().getToken());
-        AsyncHttpClient syncHttpClient = new SyncHttpClient();
-        syncHttpClient.get(getAbsoluteUrl(relativeUrl), params, responseHandler);
-    }
+  public void getUserFeedSynchronously(AsyncHttpResponseHandler responseHandler) {
+    String relativeUrl = "users/self/feed";
+    RequestParams params = new RequestParams("access_token", client.getAccessToken().getToken());
+    AsyncHttpClient syncHttpClient = new SyncHttpClient();
+    syncHttpClient.get(getAbsoluteUrl(relativeUrl), params, responseHandler);
+  }
 }

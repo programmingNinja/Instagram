@@ -19,47 +19,51 @@ import org.json.JSONObject;
 import java.util.List;
 
 public class PostsFetcherService extends IntentService {
-    private static final String TAG = "PostsFetcherService";
+  private static final String TAG = "PostsFetcherService";
 
-    public static final String EXTRA_RESULT_CODE = "resultCode";
-    public static final String EXTRA_RESULT_POSTS = "posts";
+  public static final String EXTRA_RESULT_CODE = "resultCode";
+  public static final String EXTRA_RESULT_POSTS = "posts";
 
-    public static final String ACTION = "com.codepath.instagram.services.PostsFetcherService";
-    private InstagramClientDatabase database;
+  public static final String ACTION = "com.codepath.instagram.services.PostsFetcherService";
+  private InstagramClientDatabase database;
 
-    public PostsFetcherService() {
-        super("PostsFetcherService");
-        database = InstagramClientDatabase.getInstance(this);
-    }
+  public PostsFetcherService() {
+    super("PostsFetcherService");
+    database = InstagramClientDatabase.getInstance(this);
+  }
 
-    @Override
-    protected void onHandleIntent(Intent intent) {
-        final Intent resultIntent = new Intent(ACTION);
-        MainApplication.getRestClient().getUserFeedSynchronously(new JsonHttpResponseHandler() {
+  @Override
+  protected void onHandleIntent(Intent intent) {
+    final Intent resultIntent = new Intent(ACTION);
+    MainApplication.getRestClient().getUserFeedSynchronously(new JsonHttpResponseHandler() {
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
+      @Override
+      public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+        super.onSuccess(statusCode, headers, response);
 
-                List<InstagramPost> posts = Utils.decodePostsFromJsonResponse(response);
+        List<InstagramPost> posts = Utils.decodePostsFromJsonResponse(response);
 
-                InstagramPosts postsWrapper = new InstagramPosts();
-                postsWrapper.posts = posts;
+        InstagramPosts postsWrapper = new InstagramPosts();
+        postsWrapper.posts = posts;
 
-                database.emptyAllTables();
-                database.addInstagramPosts(posts);
+        database.emptyAllTables();
+        database.addInstagramPosts(posts);
 
-                resultIntent.putExtra(EXTRA_RESULT_CODE, Activity.RESULT_OK);
-                resultIntent.putExtra(EXTRA_RESULT_POSTS, postsWrapper);
-                LocalBroadcastManager.getInstance(PostsFetcherService.this).sendBroadcast(resultIntent);
-            }
+        resultIntent.putExtra(EXTRA_RESULT_CODE, Activity.RESULT_OK);
+        resultIntent.putExtra(EXTRA_RESULT_POSTS, postsWrapper);
+        LocalBroadcastManager.getInstance(PostsFetcherService.this).sendBroadcast(resultIntent);
+      }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.d(TAG, "Failure on request");
-                resultIntent.putExtra(EXTRA_RESULT_CODE, Activity.RESULT_CANCELED);
-                LocalBroadcastManager.getInstance(PostsFetcherService.this).sendBroadcast(resultIntent);
-            }
-        });
-    }
+      @Override
+      public void onFailure(
+              int statusCode,
+              Header[] headers,
+              Throwable throwable,
+              JSONObject errorResponse) {
+        Log.d(TAG, "Failure on request");
+        resultIntent.putExtra(EXTRA_RESULT_CODE, Activity.RESULT_CANCELED);
+        LocalBroadcastManager.getInstance(PostsFetcherService.this).sendBroadcast(resultIntent);
+      }
+    });
+  }
 }

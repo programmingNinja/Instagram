@@ -4,11 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/sdvPhoto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:actualImageScaleType="centerCrop"
-        app:placeholderImage="@drawable/gray_rectangle" />
+  <com.facebook.drawee.view.SimpleDraweeView
+      android:id="@+id/sdvPhoto"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:actualImageScaleType="centerCrop"
+      app:placeholderImage="@drawable/gray_rectangle" />
 
 </FrameLayout>

@@ -5,19 +5,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.codepath.instagram.helpers.NonSwipeableViewPager
-        android:id="@+id/vpHome"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@android:color/white" />
+  <com.codepath.instagram.helpers.NonSwipeableViewPager
+      android:id="@+id/vpHome"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:background="@android:color/white" />
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tlHomeBar"
-        android:background="@android:color/black"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        style="@style/CustomTabLayout"
-        app:tabMode="fixed" />
+  <android.support.design.widget.TabLayout
+      android:id="@+id/tlHomeBar"
+      style="@style/CustomTabLayout"
+      android:layout_width="match_parent"
+      android:layout_height="56dp"
+      android:background="@android:color/black"
+      app:tabMode="fixed" />
 
 </LinearLayout>

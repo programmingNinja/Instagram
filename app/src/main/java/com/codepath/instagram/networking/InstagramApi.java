@@ -10,57 +10,57 @@ import org.scribe.utils.OAuthEncoder;
 
 public class InstagramApi extends DefaultApi20 {
 
-    private static final String URL =
-            "https://api.instagram.com/oauth/authorize/?client_id"
-                    + "=%s&redirect_uri=%s&response_type=code";
+  private static final String URL =
+          "https://api.instagram.com/oauth/authorize/?client_id"
+                  + "=%s&redirect_uri=%s&response_type=code";
 
-    @Override
-    public Verb getAccessTokenVerb() {
-        return Verb.POST;
-    }
+  @Override
+  public Verb getAccessTokenVerb() {
+    return Verb.POST;
+  }
 
-    @Override
-    public String getAccessTokenEndpoint() {
-        return "https://api.instagram.com/oauth/access_token";
-    }
+  @Override
+  public String getAccessTokenEndpoint() {
+    return "https://api.instagram.com/oauth/access_token";
+  }
 
-    @Override
-    public String getAuthorizationUrl(OAuthConfig config) {
-        return String.format(URL, config.getApiKey(), OAuthEncoder.encode(config.getCallback()));
-    }
+  @Override
+  public String getAuthorizationUrl(OAuthConfig config) {
+    return String.format(URL, config.getApiKey(), OAuthEncoder.encode(config.getCallback()));
+  }
 
-    @Override
-    public AccessTokenExtractor getAccessTokenExtractor() {
-        return new JsonTokenExtractor();
-    }
+  @Override
+  public AccessTokenExtractor getAccessTokenExtractor() {
+    return new JsonTokenExtractor();
+  }
 
-    /**
-     * Not sure if it's a Scribe bug or an Instagram oddity. We have to send the
-     * various parameters in the POST body (Scribe sends them as query string)
-     * and we must include the 'grant_type'.
-     */
-    @Override
-    public OAuthService createService(final OAuthConfig config) {
-        return new OAuth20ServiceImpl(this, config) {
-            @Override
-            public Token getAccessToken(Token requestToken, Verifier verifier) {
-                OAuthRequest request = new OAuthRequest(
-                        getAccessTokenVerb(),
-                        getAccessTokenEndpoint());
+  /**
+   * Not sure if it's a Scribe bug or an Instagram oddity. We have to send the
+   * various parameters in the POST body (Scribe sends them as query string)
+   * and we must include the 'grant_type'.
+   */
+  @Override
+  public OAuthService createService(final OAuthConfig config) {
+    return new OAuth20ServiceImpl(this, config) {
+      @Override
+      public Token getAccessToken(Token requestToken, Verifier verifier) {
+        OAuthRequest request = new OAuthRequest(
+                getAccessTokenVerb(),
+                getAccessTokenEndpoint());
 
-                request.addBodyParameter("grant_type", "authorization_code");
-                request.addBodyParameter(OAuthConstants.CLIENT_ID, config.getApiKey());
-                request.addBodyParameter(OAuthConstants.CLIENT_SECRET, config.getApiSecret());
-                request.addBodyParameter(OAuthConstants.CODE, verifier.getValue());
-                request.addBodyParameter(OAuthConstants.REDIRECT_URI, config.getCallback());
+        request.addBodyParameter("grant_type", "authorization_code");
+        request.addBodyParameter(OAuthConstants.CLIENT_ID, config.getApiKey());
+        request.addBodyParameter(OAuthConstants.CLIENT_SECRET, config.getApiSecret());
+        request.addBodyParameter(OAuthConstants.CODE, verifier.getValue());
+        request.addBodyParameter(OAuthConstants.REDIRECT_URI, config.getCallback());
 
-                if (config.hasScope()) {
-                    request.addBodyParameter(OAuthConstants.SCOPE, config.getScope());
-                }
+        if (config.hasScope()) {
+          request.addBodyParameter(OAuthConstants.SCOPE, config.getScope());
+        }
 
-                Response response = request.send();
-                return getAccessTokenExtractor().extract(response.getBody());
-            }
-        };
-    }
+        Response response = request.send();
+        return getAccessTokenExtractor().extract(response.getBody());
+      }
+    };
+  }
 }

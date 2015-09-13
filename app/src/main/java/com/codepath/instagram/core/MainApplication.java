@@ -8,32 +8,34 @@ import com.codepath.instagram.persistence.InstagramClientDatabase;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 public class MainApplication extends Application {
-    private static final String TAG = "MainApplication";
-    private static MainApplication instance;
+  private static final String TAG = "MainApplication";
+  private static MainApplication instance;
 
-    private InstagramUser currentUser;
+  private InstagramUser currentUser;
 
-    public static MainApplication sharedApplication() {
-        assert (instance != null);
-        return instance;
-    }
+  public static MainApplication sharedApplication() {
+    assert (instance != null);
+    return instance;
+  }
 
-    @Override
-    public void onCreate() {
-        instance = this;
-        super.onCreate();
-        Fresco.initialize(this);
-    }
+  @Override
+  public void onCreate() {
+    instance = this;
+    super.onCreate();
+    Fresco.initialize(this);
+  }
 
-    public static InstagramClient getRestClient() {
-        return (InstagramClient) InstagramClient.getInstance(InstagramClient.class, sharedApplication());
-    }
+  public static InstagramClient getRestClient() {
+    return (InstagramClient) InstagramClient.getInstance(
+            InstagramClient.class,
+            sharedApplication());
+  }
 
-    public InstagramUser getCurrentUser() {
-        return currentUser;
-    }
+  public InstagramUser getCurrentUser() {
+    return currentUser;
+  }
 
-    public void setCurrentUser(InstagramUser user) {
-        this.currentUser = user;
-    }
+  public void setCurrentUser(InstagramUser user) {
+    this.currentUser = user;
+  }
 }
