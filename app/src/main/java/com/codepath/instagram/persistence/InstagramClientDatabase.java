@@ -207,8 +207,6 @@ public class InstagramClientDatabase extends SQLiteOpenHelper {
             addComment(comment, postId);
           }
         }
-
-        db.insert(TABLE_POSTS, null, values);
       }
       db.setTransactionSuccessful();
     } catch (Exception e) {

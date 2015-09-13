@@ -139,7 +139,7 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
   private void populateComments(LinearLayout llContainer, List<InstagramComment> comments) {
     llContainer.removeAllViews();
 
-    int commentsCount = comments.size();
+    int commentsCount = comments == null ? 0 : comments.size();
     int initialCommentIndex = Math.max(0, commentsCount - COMMENTS_TO_SHOW);
 
     Context context = llContainer.getContext();
