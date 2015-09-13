@@ -62,9 +62,13 @@ public class Utils {
         return spannableStringBuilder;
     }
 
-    public static JSONObject loadJsonFromAsset(Context context, String fileName) throws IOException, JSONException {
+    public static JSONObject loadJsonFromAsset(
+            Context context,
+            String fileName)
+            throws IOException, JSONException {
         InputStream inputStream = context.getResources().getAssets().open(fileName);
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+        BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(inputStream, "UTF-8"));
 
         String line;
         StringBuilder builder = new StringBuilder();
@@ -97,7 +101,8 @@ public class Utils {
     }
 
     public static List<InstagramSearchTag> decodeSearchTagsFromJsonResponse(JSONObject jsonObject) {
-        List<InstagramSearchTag> searchTags = InstagramSearchTag.fromJson(getDataJsonArray(jsonObject));
+        List<InstagramSearchTag> searchTags =
+                InstagramSearchTag.fromJson(getDataJsonArray(jsonObject));
         return searchTags == null ? new ArrayList<InstagramSearchTag>() : searchTags;
     }
 

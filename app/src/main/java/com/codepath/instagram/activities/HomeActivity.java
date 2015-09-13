@@ -20,7 +20,6 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import org.apache.http.Header;
 import org.json.JSONObject;
 
-
 public class HomeActivity extends AppCompatActivity implements PostsFragment.OnFragmentInteractionListener {
     private static final String TAG = "HomeActivity";
 

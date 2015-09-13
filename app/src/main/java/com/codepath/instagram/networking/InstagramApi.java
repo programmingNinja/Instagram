@@ -3,20 +3,16 @@ package com.codepath.instagram.networking;
 import org.scribe.builder.api.DefaultApi20;
 import org.scribe.extractors.AccessTokenExtractor;
 import org.scribe.extractors.JsonTokenExtractor;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.OAuthConstants;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Token;
-import org.scribe.model.Verb;
-import org.scribe.model.Verifier;
+import org.scribe.model.*;
 import org.scribe.oauth.OAuth20ServiceImpl;
 import org.scribe.oauth.OAuthService;
 import org.scribe.utils.OAuthEncoder;
 
 public class InstagramApi extends DefaultApi20 {
 
-    private static final String URL = "https://api.instagram.com/oauth/authorize/?client_id=%s&redirect_uri=%s&response_type=code";
+    private static final String URL =
+            "https://api.instagram.com/oauth/authorize/?client_id"
+                    + "=%s&redirect_uri=%s&response_type=code";
 
     @Override
     public Verb getAccessTokenVerb() {
@@ -48,7 +44,9 @@ public class InstagramApi extends DefaultApi20 {
         return new OAuth20ServiceImpl(this, config) {
             @Override
             public Token getAccessToken(Token requestToken, Verifier verifier) {
-                OAuthRequest request = new OAuthRequest(getAccessTokenVerb(), getAccessTokenEndpoint());
+                OAuthRequest request = new OAuthRequest(
+                        getAccessTokenVerb(),
+                        getAccessTokenEndpoint());
 
                 request.addBodyParameter("grant_type", "authorization_code");
                 request.addBodyParameter(OAuthConstants.CLIENT_ID, config.getApiKey());
@@ -56,7 +54,9 @@ public class InstagramApi extends DefaultApi20 {
                 request.addBodyParameter(OAuthConstants.CODE, verifier.getValue());
                 request.addBodyParameter(OAuthConstants.REDIRECT_URI, config.getCallback());
 
-                if (config.hasScope()) request.addBodyParameter(OAuthConstants.SCOPE, config.getScope());
+                if (config.hasScope()) {
+                    request.addBodyParameter(OAuthConstants.SCOPE, config.getScope());
+                }
 
                 Response response = request.send();
                 return getAccessTokenExtractor().extract(response.getBody());

@@ -3,7 +3,6 @@ package com.codepath.instagram.helpers;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-
 import com.codepath.instagram.core.MainApplication;
 
 public class SimpleVerticalSpacerItemDecoration extends RecyclerView.ItemDecoration {
@@ -15,7 +14,11 @@ public class SimpleVerticalSpacerItemDecoration extends RecyclerView.ItemDecorat
     }
 
     @Override
-    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+    public void getItemOffsets(
+            Rect outRect,
+            View view,
+            RecyclerView parent,
+            RecyclerView.State state) {
         outRect.bottom = spaceInPx;
     }
 }

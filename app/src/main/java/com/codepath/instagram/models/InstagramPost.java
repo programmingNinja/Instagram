@@ -18,13 +18,6 @@ public class InstagramPost implements Serializable {
     public int commentsCount;
     public long createdTime;
 
-    public void appendComment(InstagramComment comment) {
-        if (comments == null) {
-            comments = new ArrayList<>();
-        }
-        comments.add(comment);
-    }
-
     public static InstagramPost fromJson(JSONObject jsonObject) {
         if (jsonObject == null) {
             return null;
@@ -38,7 +31,8 @@ public class InstagramPost implements Serializable {
 
             JSONObject imagesJson = jsonObject.optJSONObject("images");
             if (imagesJson != null) {
-                post.image = InstagramImage.fromJson(imagesJson.optJSONObject("standard_resolution"));
+                post.image =
+                        InstagramImage.fromJson(imagesJson.optJSONObject("standard_resolution"));
             }
 
             post.caption = jsonObject.optJSONObject("caption") != null ?
@@ -49,7 +43,9 @@ public class InstagramPost implements Serializable {
 
             JSONObject commentsJson = jsonObject.optJSONObject("comments");
             post.commentsCount = commentsJson != null ? commentsJson.optInt("count") : 0;
-            post.comments = commentsJson != null ? InstagramComment.fromJson(commentsJson.optJSONArray("data")) : null;
+            post.comments = commentsJson != null
+                    ? InstagramComment.fromJson(commentsJson.optJSONArray("data"))
+                    : null;
 
             post.createdTime = jsonObject.getLong("created_time");
 
@@ -82,4 +78,10 @@ public class InstagramPost implements Serializable {
         return posts;
     }
 
+    public void appendComment(InstagramComment comment) {
+        if (comments == null) {
+            comments = new ArrayList<>();
+        }
+        comments.add(comment);
+    }
 }

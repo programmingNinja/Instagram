@@ -15,7 +15,7 @@ public class MainApplication extends Application {
     private InstagramUser currentUser;
 
     public static MainApplication sharedApplication() {
-        assert(instance != null);
+        assert (instance != null);
         return instance;
     }
 
