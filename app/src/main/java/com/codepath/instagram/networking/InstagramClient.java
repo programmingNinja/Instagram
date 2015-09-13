@@ -18,7 +18,7 @@ public class InstagramClient extends OAuthBaseClient {
   public static final String REST_CONSUMER_SECRET = "7f18a14de6c241c2a9ccc9f4a3df4b35";
   public static final String REDIRECT_URI = "oauth://codepath.com";
 
-  public static InstagramClient instagramClient;
+  private static SyncHttpClient syncHttpClient = new SyncHttpClient();
 
   public InstagramClient(Context context) {
     super(context, REST_API_CLASS, REST_URL,
@@ -90,7 +90,6 @@ public class InstagramClient extends OAuthBaseClient {
   public void getUserFeedSynchronously(AsyncHttpResponseHandler responseHandler) {
     String relativeUrl = "users/self/feed";
     RequestParams params = new RequestParams("access_token", client.getAccessToken().getToken());
-    AsyncHttpClient syncHttpClient = new SyncHttpClient();
     syncHttpClient.get(getAbsoluteUrl(relativeUrl), params, responseHandler);
   }
 }
